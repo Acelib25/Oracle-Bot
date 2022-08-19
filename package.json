@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "discord.js": "^14.2.0"
+  },
+  "name": "oracle-bot",
+  "version": "1.0.0",
+  "description": "New and Improved!",
+  "main": "oracle.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Acelib25/Oracle-Bot.git"
+  },
+  "author": "AceLib25 | Iseden Wildfire",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Acelib25/Oracle-Bot/issues"
+  },
+  "homepage": "https://github.com/Acelib25/Oracle-Bot#readme"
+}
