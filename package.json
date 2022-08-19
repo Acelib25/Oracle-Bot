@@ -6,7 +6,9 @@
   "version": "1.0.0",
   "description": "New and Improved!",
   "main": "oracle.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^8.22.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
