@@ -41,7 +41,6 @@ client.on('interactionCreate', async interaction => {
 
 	//Set name
 	let speakers_name = interaction.member.nick;
-	console.log(speakers_name)
 	if (speakers_name == null) {
 		speakers_name = interaction.member.user.username;
 	}
