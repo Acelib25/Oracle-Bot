@@ -1,18 +1,19 @@
+/* eslint-disable no-unused-vars */
 // Require the necessary discord.js classes
-const { GatewayIntentBits, Collection } = require('discord.js');
-const { token } = require('../.config.json');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
-const { SapphireClient } = require('@sapphire/framework');
+const { token } = require('./.config.json');
 
 // Create a new client instance
-const client = new SapphireClient(
+const client = new Client(
     {
-        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent],
-        defaultPrefix: 'Oracle,',
-    });
+        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages],
+		loadMessageCommandListeners: true,
+    },
+);
 
-// Create the Commands parts
+
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -31,21 +32,20 @@ client.once('ready', () => {
 });
 
 client.on('interactionCreate', async interaction => {
-    console.log('Interaction Started');
 	if (!interaction.isChatInputCommand()) return;
 
-	const { commandName } = interaction;
+	const command = interaction.client.commands.get(interaction.commandName);
 
-	if (commandName === 'ping') {
-		await interaction.reply('Pong!');
-	}
-	else if (commandName === 'server') {
-		await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
-	}
-	else if (commandName === 'user') {
-		await interaction.reply(`Your tag: ${interaction.user.tag}\nYour id: ${interaction.user.id}`);
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 });
+
 
 
 // Login to Discord with your client's token
