@@ -15,7 +15,6 @@ module.exports = {
         const canvas = Canvas.createCanvas(720, 500);
         const ctx = canvas.getContext('2d');
 		const user = interaction.options.getUser('target');
-		const reason = interaction.options.getString('reason');
         const background = await Canvas.loadImage(image);
         const heart = await Canvas.loadImage('https://discordapp.com/assets/0483f2b648dcc986d01385062052ae1c.svg')
         function getRandom(min, max) {
@@ -46,5 +45,10 @@ module.exports = {
 
         const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'bonk.png' });
         interaction.reply({ content: `<@${user.id}> loves Egg Borger`, files: [attachment] })
+        return { message: await interaction.fetchReply() }
+	},
+    async args(interaction) {
+		const user = interaction.options.getUser('target');
+		return { target: user }
 	},
 };

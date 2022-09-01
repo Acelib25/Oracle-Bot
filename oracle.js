@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // Require the necessary discord.js classes
-const { Client, Collection, GatewayIntentBits, ActivityType } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, ActivityType, CommandInteractionOptionResolver } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const { token } = require('./.config.json');
@@ -46,27 +46,31 @@ client.on('interactionCreate', async interaction => {
 	}
 
 	try {
-		await command.execute(interaction);
+		const commandObj = await command.execute(interaction);
+		const cmdMessage = `${commandObj.message}`;
+		
+		let args = await command.args(interaction);
+		const feedbackEmbed =  {
+			color: 0x56ceb3,
+			title: `${interaction.member.user.tag} ran a command`,
+			fields: [
+				{ name: 'Command', value: `${interaction.commandName}` },
+				{ name: 'Args', value: `\`\`\`${JSON.stringify(args, null, 4)}\`\`\``},
+				{ name: 'Content', value: `${cmdMessage}`},
+				{ name: 'Guild', value:  `${interaction.guild.name}(${interaction.guild.id})`},
+				{ name: 'Channel', value:  `${interaction.channel.name}(${interaction.channel.id})`},
+			],
+			timestamp: new Date().toISOString(),
+		}
+		client.guilds.cache.get('747587696867672126').channels.cache.get('747587927261052969').send({ embeds: [feedbackEmbed]})
+		
 		client.user.setActivity(speakers_name, { type: ActivityType.Listening });
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 
-	let args = "None";
-
-
-	const feedbackEmbed =  {
-		color: 0x56ceb3,
-		title: `${interaction.member.user.tag} ran a command`,
-		fields: [
-			{ name: 'Command', value: `${interaction.commandName}` },
-			{ name: 'Args', value: `${args}`},
-			{ name: 'Guild', value:  `${interaction.guild.name}(${interaction.guild.id})`}
-		],
-		timestamp: new Date().toISOString(),
-	}
-	client.guilds.cache.get('747587696867672126').channels.cache.get('747587927261052969').send({ embeds: [feedbackEmbed]})
+	
 });
 
 

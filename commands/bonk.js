@@ -3,7 +3,8 @@ const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const Canvas = require('@napi-rs/canvas');
 const { Discord } = require('discord.js');
 const axios = require('axios');
-const fs = require('node:fs')
+const fs = require('node:fs');
+const { resolveNaptr } = require('node:dns');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -54,5 +55,12 @@ module.exports = {
         else {
             interaction.reply({ content: `${user.username} has been bonked!!!!`, files: [attachment] })
         }
+        return { message: await interaction.fetchReply() }
+	},
+    async args(interaction) {
+		const user = interaction.options.getUser('target');
+		const reason = interaction.options.getString('reason');
+        const pingpong = interaction.options.getBoolean('ping');
+		return { target: user, reason: reason, ping: pingpong }
 	},
 };

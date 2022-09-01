@@ -7,8 +7,29 @@ module.exports = {
 		.setName('bigthink')
 		.setDescription('HMMMMMMMMMMMM'),
 	async execute(interaction) {
+		
+		function choose(choices) {
+            var index = Math.floor(Math.random() * choices.length);
+            return choices[index];
+        }
+
+		msgOptions = [
+			"I have decided that your mother is a utter ||delight||.",
+			"After some thought I have decided that you are lame.",
+			"I have asked the Entropy to reveal your future, I regret to say you have none.",
+			"The Entropy has told me you are pretty cool. :sunglasses:",
+			"May your crops wither and your animals become diseased.",
+			"My ponderings has concluded, you are a hoe."
+		]
+		
+		
 		await interaction.deferReply();
-		await wait(600000);
-		await interaction.editReply('I have decided that your mother is a ||nice lady||');
+		await wait(10000);
+		await interaction.editReply(choose(msgOptions));
+		return { message: await interaction.fetchReply() }
+		//await interaction.reply('No More thinking, thoughts cause errors that crash me :P.\n\nIf you don\'t like it talk to Ace')
+	},
+	async args(interaction) {
+		return { none: 'none' }
 	},
 };
