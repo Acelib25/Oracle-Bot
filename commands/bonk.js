@@ -13,7 +13,7 @@ module.exports = {
 		.addUserOption(option => option.setName('target').setDescription('Who is horny?').setRequired(true))
 		.addStringOption(option => option.setName('reason').setDescription('Why they horny?'))
         .addBooleanOption(option => option.setName('ping').setDescription('Want to ping them?')),
-	async execute(interaction) {
+	async execute(interaction, currency) {
 		let image = "https://i.imgur.com/QFcD0kw.png"
         const canvas = Canvas.createCanvas(720, 492);
         const ctx = canvas.getContext('2d');

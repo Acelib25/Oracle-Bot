@@ -10,7 +10,7 @@ module.exports = {
 		.setName('borgur')
 		.setDescription('Yummi')
 		.addUserOption(option => option.setName('target').setDescription('Who needs a borgur?').setRequired(true)),
-	async execute(interaction) {
+	async execute(interaction, currency) {
 		let image = "https://cdn.discordapp.com/attachments/1000617928938508368/1014589364824719472/unknown-237.png"
         const canvas = Canvas.createCanvas(720, 500);
         const ctx = canvas.getContext('2d');

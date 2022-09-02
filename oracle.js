@@ -4,6 +4,42 @@ const { Client, Collection, GatewayIntentBits, ActivityType, CommandInteractionO
 const fs = require('node:fs');
 const path = require('node:path');
 const { token } = require('./.config.json');
+const Sequelize = require('sequelize');
+const { Users, CurrencyShop } = require('./dbObjects.js');
+
+
+const sequelize = new Sequelize('database', 'user', 'password', {
+	host: 'localhost',
+	dialect: 'sqlite',
+	logging: false,
+	// SQLite only
+	storage: 'database.sqlite',
+});
+
+const currency = new Collection();
+
+Reflect.defineProperty(currency, 'add', {
+	value: async (id, amount) => {
+		const user = currency.get(id);
+
+		if (user) {
+			user.balance = user.balance + Number(amount);
+			return user.save();
+		}
+
+		const newUser = await Users.create({ user_id: id, balance: amount });
+		currency.set(id, newUser);
+
+		return newUser;
+	},
+});
+
+Reflect.defineProperty(currency, 'getBalance', {
+	value: id => {
+		const user = currency.get(id);
+		return user ? user.balance : 0;
+	},
+});
 
 // Create a new client instance
 const client = new Client(
@@ -27,8 +63,10 @@ for (const file of commandFiles) {
 }
 
 // When the client is ready, run this code (only once)
-client.once('ready', () => {
+client.once('ready', async () => {
 	client.user.setStatus('online');
+	const storedBalances = await Users.findAll();
+	storedBalances.forEach(b => currency.set(b.user_id, b));
 	console.log('Ready!');
 });
 
@@ -36,6 +74,7 @@ client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const command = interaction.client.commands.get(interaction.commandName);
+
 
 	if (!command) return;
 
@@ -46,12 +85,13 @@ client.on('interactionCreate', async interaction => {
 	}
 
 	try {
-		const commandObj = await command.execute(interaction);
+		const commandObj = await command.execute(interaction, currency);
+		currency.add(interaction.member.user.id, 0.10)
 		const cmdMessage = `${commandObj.message}`;
 		
 		let args = await command.args(interaction);
 		const feedbackEmbed =  {
-			color: 0x56ceb3,
+			color: 0x2c806a,
 			title: `${interaction.member.user.tag} ran a command`,
 			fields: [
 				{ name: 'Command', value: `${interaction.commandName}` },

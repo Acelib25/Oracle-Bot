@@ -7,7 +7,7 @@ module.exports = {
 		.setName('salt')
 		.setDescription('I shall insult someone.')
 		.addUserOption(option => option.setName('target').setDescription('Who is horny?')),
-	async execute(interaction) {
+	async execute(interaction, currency) {
 		
 		const taggedUser = interaction.options.getUser('target');
 
@@ -238,7 +238,7 @@ module.exports = {
 		
 		
 		await interaction.deferReply();
-		await wait(3000);
+		await wait(2000);
 		await interaction.editReply(out);
 		return { message: await interaction.fetchReply() }
 		//await interaction.reply('No More thinking, thoughts cause errors that crash me :P.\n\nIf you don\'t like it talk to Ace')

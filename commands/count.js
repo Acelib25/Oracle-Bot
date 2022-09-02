@@ -7,7 +7,7 @@ module.exports = {
 		.setName('count')
 		.setDescription('Counts to number!')
 		.addIntegerOption(option => option.setName('target').setDescription('How high?')),
-	async execute(interaction) {
+	async execute(interaction, currency) {
 		
 		const num = interaction.options.getInteger('target')
 
@@ -16,7 +16,7 @@ module.exports = {
 		}
 
 		await interaction.reply(`Ok I will count to ${num}`)
-		await wait(3000);
+		await wait(2000);
 		for (let i = 1; i <= num; i++){
 			interaction.editReply(`${i}`)
 			await wait(1000);

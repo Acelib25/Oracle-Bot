@@ -6,7 +6,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('bigthink')
 		.setDescription('HMMMMMMMMMMMM'),
-	async execute(interaction) {
+	async execute(interaction, currency) {
 		
 		function choose(choices) {
             var index = Math.floor(Math.random() * choices.length);
@@ -19,13 +19,20 @@ module.exports = {
 			"I have asked the Entropy to reveal your future, I regret to say you have none.",
 			"The Entropy has told me you are pretty cool. :sunglasses:",
 			"May your crops wither and your animals become diseased.",
-			"My ponderings has concluded, you are a hoe."
+			"My ponderings has concluded, you are a hoe.",
+			"+10"
 		]
 		
+		let decision = choose(msgOptions)
+
+		if (decision == '+10'){
+			decision = 'I see great fortune in your future! (+10 ⵇ)'
+			currency.add(interaction.member.user.id, 10)
+		}
 		
 		await interaction.deferReply();
-		await wait(10000);
-		await interaction.editReply(choose(msgOptions));
+		await wait(5000);
+		await interaction.editReply(decision);
 		return { message: await interaction.fetchReply() }
 		//await interaction.reply('No More thinking, thoughts cause errors that crash me :P.\n\nIf you don\'t like it talk to Ace')
 	},

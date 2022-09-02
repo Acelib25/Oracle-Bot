@@ -5,7 +5,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('number')
 		.setDescription('The Numbers The Numbers The Numbers'),
-	async execute(interaction) {
+	async execute(interaction, currency) {
 		function getRandom(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }

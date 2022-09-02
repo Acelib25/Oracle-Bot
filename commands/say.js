@@ -7,7 +7,7 @@ module.exports = {
 		.setDescription('Oracle Says')
 		.addStringOption(option => option.setName('message').setDescription('You what me to say what?'))
 		.addAttachmentOption(option => option.setName('image').setDescription('You what me to show what?')),
-	async execute(interaction) {
+	async execute(interaction, currency) {
 		/*if(interaction.member.id != 344143763918159884){
 			await interaction.reply({content: "Fuck you, no I am not saying that.", ephemeral: true});
 		}*/
