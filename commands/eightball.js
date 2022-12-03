@@ -28,7 +28,6 @@ module.exports = {
 
         if (override){
             question = `${interaction.options.get("message").message.author.username} had said:" ${interaction.options.get("message").message.content}"`;
-            console.log(question);
         }
 
 		msgOptions = [

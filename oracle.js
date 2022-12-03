@@ -122,8 +122,6 @@ client.on('interactionCreate', async interaction => {
 		const command = context.client.commands.get(cmd_name);
 		//const ctx_command = context.client.commands.get(command.command);
 
-		console.log(context);
-
 		//Set name
 		let speakers_name = interaction.member.nickname;
 		if (speakers_name == null) {
