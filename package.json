@@ -9,15 +9,17 @@
     "sqlite3": "^5.0.11"
   },
   "name": "oracle-bot",
-  "version": "1.0.3",
-  "versionName": "Third Eye",
-  "description": "The future looks bright with this new sight!",
+  "version": "1.0.4",
+  "versionName": "Four Dimentional!",
+  "description": "Thinking in 4D",
   "main": "oracle.js",
   "devDependencies": {
     "eslint": "^8.22.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./oracle.js",
+    "deploy": "node ./.deploy-commands.js"
   },
   "repository": {
     "type": "git",

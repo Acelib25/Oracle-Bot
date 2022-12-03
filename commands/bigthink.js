@@ -5,13 +5,22 @@ const wait = require('node:timers/promises').setTimeout;
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('bigthink')
-		.setDescription('HMMMMMMMMMMMM'),
+		.setDescription('HMMMMMMMMMMMM')
+		.addIntegerOption(option => option.setName('index').setDescription('Index')),
 	async execute(interaction, currency) {
 		
+		let ind = interaction.options.getInteger('index');
+
 		function choose(choices) {
             var index = Math.floor(Math.random() * choices.length);
             return choices[index];
         }
+		
+		let name = interaction.member.user.username;
+
+		if (interaction.member.nickname){
+			name = interaction.member.nickname;
+		}
 
 		msgOptions = [
 			"I have decided that your mother is a utter ||delight||.",
@@ -20,10 +29,20 @@ module.exports = {
 			"The Entropy has told me you are pretty cool. :sunglasses:",
 			"May your crops wither and your animals become diseased.",
 			"My ponderings has concluded, you are a hoe.",
+			"May both sides of your pillow be hot.",
+			`${name}: \\**Donates their body to science*\\*\n\nScience: \**Donates the body to Goodwill*\*`,
+			"I hope your body gets donated to science",
 			"+10"
 		]
-		
+
 		let decision = choose(msgOptions)
+
+		if (ind) {
+			if (ind > msgOptions.length - 1){
+				ind = 0;
+			}
+			decision == msgOptions[ind];
+		}
 
 		if (decision == '+10'){
 			decision = 'I see great fortune in your future! (+10 ⵇ)'
