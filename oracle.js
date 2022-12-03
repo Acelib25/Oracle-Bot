@@ -116,13 +116,13 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 	
-	else if(interaction.isUserContextMenuCommand()){
+	else if(interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand()){
 		const context = interaction;
 		const cmd_name = context.commandName;
 		const command = context.client.commands.get(cmd_name);
 		//const ctx_command = context.client.commands.get(command.command);
 
-		console.log(command);
+		console.log(context);
 
 		//Set name
 		let speakers_name = interaction.member.nickname;
@@ -131,7 +131,7 @@ client.on('interactionCreate', async interaction => {
 		}
 
 		try {
-			const commandObj = await command.execute(context, currency, true, context.targetUser, null, true);
+			const commandObj = await command.execute(context, currency, true, command.args);
 			
 			let args = await command.args(context, cmd_name);
 			const feedbackEmbed =  {

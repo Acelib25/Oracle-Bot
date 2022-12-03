@@ -20,7 +20,8 @@ module.exports = {
     ctx: new ContextMenuCommandBuilder()
         .setName('Bonk')
         .setType(ApplicationCommandType.User),
-	async execute(interaction, currency, overwite, usr, rsn, pngpng) {
+    overrides: { usr: true, rsn: null, pngpng: true},
+	async execute(interaction, currency, override, args) {
 		let image = "https://i.imgur.com/QFcD0kw.png"
         const canvas = Canvas.createCanvas(720, 492);
         const ctx = canvas.getContext('2d');
@@ -28,10 +29,10 @@ module.exports = {
 		let reason = interaction.options.getString('reason');
         let pingpong = interaction.options.getBoolean('ping');
 
-        if (overwite){
-            user = usr;
-            reason = rsn;
-            pingpong = pngpng;
+        if (override){
+            user = interaction.targetUser;
+            reason = args.rsn;
+            pingpong = args.pngpng;
         }
 
         const background = await Canvas.loadImage(image)

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, ApplicationCommandType, ContextMenuCommandBuilder } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -7,13 +7,28 @@ module.exports = {
 		.setName('8')
 		.setDescription('See what fate says')
 		.addStringOption(option => option.setName('question').setDescription('What shall ye ask?')),
-	async execute(interaction, currency) {
+    ctx: new ContextMenuCommandBuilder()
+        .setName('8')
+        .setType(ApplicationCommandType.Message),
+    overrides: { qst: true },
+	async execute(interaction, currency, override, args) {
 
-		let question = interaction.options.getString('question');
+        let name = interaction.member.user.username;
+
+		if (interaction.member.nickname){
+			name = interaction.member.nickname;
+		}
+
+		let question = `${name} asks: "${interaction.options.getString('question')}"`;
 		
 		function choose(choices) {
             var index = Math.floor(Math.random() * choices.length);
             return choices[index];
+        }
+
+        if (override){
+            question = `${interaction.options.get("message").message.author.username} had said:" ${interaction.options.get("message").message.content}"`;
+            console.log(question);
         }
 
 		msgOptions = [
@@ -41,20 +56,14 @@ module.exports = {
 		]
 		
 		let decision = choose(msgOptions)
-
-		let name = interaction.member.user.username;
-
-		if (interaction.member.nickname){
-			name = interaction.member.nickname;
-		}
 		
 		if (!question){
 			question = "*secret*"
 		}
 
-		await interaction.reply(`${name} asks: "${question}".\n8-Ball: *Thinking...*`);
+		await interaction.reply(`${question}.\n8-Ball: *Thinking...*`);
 		await wait(5000);
-		await interaction.editReply(`${name} asks: "${question}".\n8-Ball: ${decision}`);
+		await interaction.editReply(`${question}.\n8-Ball: ${decision}`);
 		return { message: await interaction.fetchReply() }
 		//await interaction.reply('No More thinking, thoughts cause errors that crash me :P.\n\nIf you don\'t like it talk to Ace')
 	},
