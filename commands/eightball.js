@@ -9,7 +9,7 @@ module.exports = {
 		.addStringOption(option => option.setName('question').setDescription('What shall ye ask?')),
 	async execute(interaction, currency) {
 
-		const question = interaction.options.getString('question');
+		let question = interaction.options.getString('question');
 		
 		function choose(choices) {
             var index = Math.floor(Math.random() * choices.length);
