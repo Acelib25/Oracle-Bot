@@ -16,8 +16,6 @@ module.exports = {
 
         const bet = interaction.options.getInteger('bet');
 
-        console.log(interaction);
-
         function isNumeric(num){
 			return !isNaN(num)
 		}

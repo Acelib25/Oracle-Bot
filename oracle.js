@@ -83,8 +83,6 @@ client.on('interactionCreate', async interaction => {
 
 		if (!command) return;
 
-		console.log(interaction);
-
 		//Set name
 		let speakers_name = interaction.member.nickname;
 		if (speakers_name == null) {
