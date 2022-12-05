@@ -75,13 +75,15 @@ client.once('ready', async () => {
 });
 
 client.on('interactionCreate', async interaction => {
-	if (!(interaction.isChatInputCommand() || interaction.isButton || interaction.isUserContextMenuCommand())) return;
+	if (!(interaction.isChatInputCommand() || interaction.isButton() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand())) return;
 
 	
 	if(interaction.isChatInputCommand()){
 		const command = interaction.client.commands.get(interaction.commandName);
 
 		if (!command) return;
+
+		console.log(interaction);
 
 		//Set name
 		let speakers_name = interaction.member.nickname;
@@ -152,7 +154,7 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 		
-	else if(interaction.isButton){
+	else if(interaction.isButton()){
 		const button = interaction;
 		console.log(button)
 		const cmd_name = button.message.interaction.commandName;
