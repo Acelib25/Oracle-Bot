@@ -16,7 +16,7 @@ module.exports = {
 
         const bet = interaction.options.getInteger('bet');
 
-        interaction = interaction;
+        console.log(interaction);
 
         function isNumeric(num){
 			return !isNaN(num)
@@ -46,8 +46,8 @@ module.exports = {
 
         let stat = "....";
 
+        //await interaction.reply("Loading");
         await interaction.deferReply();
-        await wait(250);
 
         for(k=0; k < 16; k++){
             if ( a < 8) {
