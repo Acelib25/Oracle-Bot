@@ -92,16 +92,20 @@ client.on('interactionCreate', async interaction => {
 		try {
 			const commandObj = await command.execute(interaction, currency);
 			currency.add(interaction.member.user.id, 0.10)
-			const cmdMessage = `${commandObj.message}`;
+			const cmdMessage = await commandObj.message;
 			
-			let args = await command.args(interaction);
+			let args = await commandObj.args;
+
+			console.log(args);
+			console.log(JSON.stringify(args, null, 4));
+
 			const feedbackEmbed =  {
 				color: 0x2c806a,
 				title: `${interaction.member.user.tag} ran a command`,
 				fields: [
 					{ name: 'Command', value: `${interaction.commandName}` },
 					{ name: 'Args', value: `\`\`\`${JSON.stringify(args, null, 4)}\`\`\``},
-					{ name: 'Content', value: `${cmdMessage}`},
+					{ name: 'Content', value: `; ${cmdMessage}`},
 					{ name: 'Guild', value:  `${interaction.guild.name}(${interaction.guild.id})`},
 					{ name: 'Channel', value:  `${interaction.channel.name}(${interaction.channel.id})`},
 				],
@@ -116,7 +120,7 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 	
-	else if(interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand()){
+	/*else if(interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand()){
 		const context = interaction;
 		const cmd_name = context.commandName;
 		const command = context.client.commands.get(cmd_name);
@@ -150,13 +154,18 @@ client.on('interactionCreate', async interaction => {
 			console.error(error);
 			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
-	}
+	}*/
 		
 	else if(interaction.isButton()){
 		const button = interaction;
 		console.log(button)
-		const cmd_name = button.message.interaction.commandName;
+		let cmd_name = button.message.interaction.commandName;
 		console.log(cmd_name);
+
+		if (cmd_name == "fun bonk"){
+			cmd_name = "fun"
+		}
+
 		const command = button.client.commands.get(cmd_name);
 
 		//Set name
@@ -185,7 +194,7 @@ client.on('interactionCreate', async interaction => {
 			client.user.setActivity(speakers_name, { type: ActivityType.Listening });
 		} catch (error) {
 			console.error(error);
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
 	}
 	

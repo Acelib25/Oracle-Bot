@@ -11,10 +11,11 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('slots')
 		.setDescription('Roll the dice!')
-        .addIntegerOption(option => option.setName('bet').setDescription('How much will you bet?').setRequired(true).setMinValue(1)),
+        .addNumberOption(option => option.setName('bet').setDescription('How much will you bet?').setRequired(true).setMinValue(0.25)),
 	async execute(interaction, currency) {
 
-        const bet = interaction.options.getInteger('bet');
+        await interaction.reply("Loading");
+        const bet = interaction.options.getNumber('bet');
 
         function isNumeric(num){
 			return !isNaN(num)
@@ -45,7 +46,6 @@ module.exports = {
         let stat = "....";
 
         //await interaction.reply("Loading");
-        await interaction.deferReply();
 
         for(k=0; k < 16; k++){
             if ( a < 8) {
@@ -83,34 +83,34 @@ module.exports = {
             if(slot2bottom > 5 ){slot2bottom = 0}
             if(slot3bottom > 5 ){slot3bottom = 0}
 
-            await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nYou bet $${bet} and you${stat}`)
+            await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nYou bet ${bet} ⵇ and you${stat}`)
 
             await wait(250);
 
         }
 
         if(slot1 == slot2 && slot2 == slot3){  
-            stat = ` Win! Your bet was doubled!\nYou gained $${bet*2}`
+            stat = ` Win! Your bet was doubled!\nYou gained ${bet*2} ⵇ`
             currency.add(interaction.member.user.id, bet*2);
         } 
         else if(slot1 == slot2 || slot2 == slot3){
-            stat = ` Got 2 in a row! I'll let you keep your money.\nYou lost $0`
+            stat = ` Got 2 in a row! I'll let you keep your money.\nYou lost 0 ⵇ`
         }
         else if(slot1 == slot2 || slot2 == slot3 || slot1 == slot3){
-            stat = ` Got 2 out of 3! I'll go halfsies with ya. :stuck_out_tongue_winking_eye:\nYou lost $${bet/2}`
+            stat = ` Got 2 out of 3! I'll go halfsies with ya. :stuck_out_tongue_winking_eye:\nYou lost ${bet/2} ⵇ`
             currency.add(interaction.member.user.id, -bet/2);
         }
         else {
-            stat = ` Lose! Bye bye money. :(\nYou lost $${bet}`
+            stat = ` Lose! Bye bye money. :(\nYou lost ${bet} ⵇ`
             currency.add(interaction.member.user.id, -bet);
         }
         await wait(250);
-        await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nYou bet $${bet} and you${stat}`)
+        await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nYou bet ${bet} ⵇ and you${stat}`)
 		
         return { message: await interaction.fetchReply() }
 	},
     async args(interaction) {
-		const bet = interaction.options.getInteger('bet');
+		const bet = interaction.options.getNumber('bet');
 		return { bet: bet }
 	},
 };

@@ -5,8 +5,7 @@ const wait = require('node:timers/promises').setTimeout;
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('bigthink')
-		.setDescription('HMMMMMMMMMMMM')
-		.addIntegerOption(option => option.setName('index').setDescription('Index')),
+		.setDescription('HMMMMMMMMMMMM'),
 	async execute(interaction, currency) {
 		
 		let ind = interaction.options.getInteger('index');

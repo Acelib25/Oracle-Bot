@@ -8,7 +8,6 @@ module.exports = {
 		.setDescription('I shall insult someone.')
 		.addUserOption(option => option.setName('target').setDescription('Who is horny?')),
 	async execute(interaction, currency) {
-		
 		const taggedUser = interaction.options.getUser('target');
 
 		function choose(choices) {

@@ -4,7 +4,7 @@ const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('bal')
+		.setName('balance')
 		.setDescription('Check someones Entropy Level')
 		.addUserOption(option => option.setName('target').setDescription('Who? (Leave blank for yourself)')),
 	async execute(interaction, currency) {

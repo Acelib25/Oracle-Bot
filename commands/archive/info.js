@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const { SlashCommandBuilder } = require('discord.js');
-const packageInfo = require('../package.json');
+const packageInfo = require('../../package.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()

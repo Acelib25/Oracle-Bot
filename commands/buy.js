@@ -14,6 +14,7 @@ module.exports = {
 			{ name: 'Cake', value: 'Cake' },
 			{ name: 'Entropy', value: 'Entropy' },
 			{ name: 'null', value: 'null' },
+			{ name: 'Gun', value: 'Gun' },
 		)),
 	async execute(interaction, currency) {
 		const itemName = interaction.options.getString('item');
