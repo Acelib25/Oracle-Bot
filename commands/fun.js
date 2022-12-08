@@ -5,6 +5,7 @@ const Canvas = require('@napi-rs/canvas');
 const { Discord } = require('discord.js');
 const axios = require('axios');
 const fs = require('node:fs');
+const path = require('node:path');
 const wait = require('node:timers/promises').setTimeout;
 const { Users, CurrencyShop } = require('../dbObjects.js');
 const { Op } = require('sequelize');
@@ -65,6 +66,10 @@ module.exports = {
             .setDescription('Oracle Says')
             .addStringOption(option => option.setName('message').setDescription('You what me to say what?'))
             .addAttachmentOption(option => option.setName('image').setDescription('You what me to show what?')),
+        ).addSubcommand(sub => 
+            sub
+            .setName('inspire')
+            .setDescription('Oracle Inspires!'),
         ),
 	async execute(interaction, currency) {
 		
@@ -567,6 +572,29 @@ module.exports = {
         }
       
         
+        else if (interaction.options.getSubcommand() === 'inspire') {
+            function choose(choices) {
+                var index = Math.floor(Math.random() * choices.length);
+                return choices[index];
+            }
+            
+            const quotes = [];
+            const quotesPath = path.join(__dirname, '.quotes');
+            const quotesFiles = fs.readdirSync(quotesPath).filter(file => file);
+
+
+            for (const file of quotesFiles) {
+                const filePath = path.join(quotesPath, file);
+                quotes.push(filePath);
+            }
+
+            const dec = choose(quotes);
+
+            const attachment = new AttachmentBuilder( dec );
+
+            await interaction.reply({files: [attachment] });
+            return { message: await interaction.fetchReply(), args: { quote: dec } }
+        }
 	},
     async press(button, currency){
         let speakers_name = button.member.nickname;

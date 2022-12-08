@@ -116,7 +116,7 @@ client.on('interactionCreate', async interaction => {
 			client.user.setActivity(speakers_name, { type: ActivityType.Listening });
 		} catch (error) {
 			console.error(error);
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.channel.send({ content: 'There was an error while executing this command!'});
 		}
 	}
 	
