@@ -216,10 +216,6 @@ module.exports = {
             
             const num = interaction.options.getInteger('target')
 
-            if (num > 100){
-                num = 100;
-            }
-
             await interaction.reply(`Ok I will count to ${num}`)
             await wait(2000);
             for (let i = 1; i <= num; i++){

@@ -69,6 +69,7 @@ for (const file of commandFiles) {
 // When the client is ready, run this code (only once)
 client.once('ready', async () => {
 	client.user.setStatus('online');
+    client.user.setActivity("the Entropy's Call...", { type: ActivityType.Listening });
 	const storedBalances = await Users.findAll();
 	storedBalances.forEach(b => currency.set(b.user_id, b));
 	console.log('Ready!');
@@ -115,7 +116,6 @@ client.on('interactionCreate', async interaction => {
 			}
 			client.guilds.cache.get('747587696867672126').channels.cache.get('747587927261052969').send({ embeds: [feedbackEmbed]})
 			
-			client.user.setActivity(speakers_name, { type: ActivityType.Listening });
 		} catch (error) {
 			console.error(error);
 			try {await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true})} catch(e){console.log("Fucked up")}

@@ -8,9 +8,8 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('buy')
 		.setDescription('Buy from the Shop')
-		.addStringOption(option => option.setName('item').setDescription('What would you like to buy?')
+		.addStringOption(option => option.setName('item').setDescription('What would you like to buy?'))
         .addIntegerOption(option => option.setName('amount').setDescription('How many?').setMinValue(1)),
-		),
 	async execute(interaction, currency) {
 		const itemName = interaction.options.getString('item');
 		const item = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemName } } });
