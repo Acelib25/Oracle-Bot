@@ -77,6 +77,7 @@ module.exports = {
             const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
             if(interaction.member.user.id != '344143763918159884') {currency.add(interaction.member.user.id, item.cost * -1)};
             await user.addWorker(item);
+            currency.add(interaction.member.user.id, item.cost * -1);
 
             await interaction.reply(`You've bought: ${item.name}.`);
             return { message: await interaction.fetchReply() }
@@ -356,7 +357,7 @@ module.exports = {
             } else {
                 await interaction.reply({content: msg.toString().replace(/([\,])+/g, "\n"), ephemeral: true});
             }
-            //Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
+            Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
             return { message: 'E' }
         }
 

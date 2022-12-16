@@ -89,9 +89,11 @@ client.on('interactionCreate', async interaction => {
 			speakers_name = interaction.member.user.username;
 		}
 
+        const commandObj = await command.execute(interaction, currency);
+		currency.add(interaction.member.user.id, 0.10)
+
 		try {
-			const commandObj = await command.execute(interaction, currency);
-			currency.add(interaction.member.user.id, 0.10)
+			
 			const cmdMessage = await commandObj.message;
 			
 			let args = await commandObj.args;

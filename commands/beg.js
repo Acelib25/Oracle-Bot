@@ -11,7 +11,7 @@ module.exports = {
 		.setName('beg')
 		.setDescription('Beg for money'),
 	async execute(interaction, currency) {
-		await interaction.deferReply({ephemeral: true});
+		await interaction.deferReply();
         function weighted_random(options) {
             var i;
         
@@ -54,14 +54,14 @@ module.exports = {
         if (blacklist.includes(interaction.member.user.id)){return interaction.editReply("You begged louder but no one cares...")}
 
         let opt = [
-            {item: 0, weight: 2000 }, 
-            {item: 0.1, weight: 500 }, 
-            {item: 0.5, weight: 500 }, 
-            {item: 0.75, weight: 300 }, 
-            {item: 1, weight: 200 },
-            {item: 5, weight: 100 },
-            {item: 10, weight: 10 },
-            {item: -5, weight: 10 }
+            {item: 0, weight: 2500 }, 
+            {item: 0.1, weight: 250 }, 
+            {item: 0.5, weight: 250 }, 
+            {item: 0.75, weight: 150 }, 
+            {item: 1, weight: 100 },
+            {item: 5, weight: 50 },
+            {item: 10, weight: 5 },
+            {item: -5, weight: 300 }
         ]
         
         let pity = 0;
