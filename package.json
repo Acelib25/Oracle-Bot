@@ -9,9 +9,9 @@
     "sqlite3": "^5.0.11"
   },
   "name": "oracle-bot",
-  "version": "2.0.0",
-  "versionName": "Reconfigured!",
-  "description": "100 commands x 25 subcommands = 2500 possible commands.",
+  "version": "2.1.0",
+  "versionName": "Get To Work!",
+  "description": "Workers workers, what do they do?",
   "main": "oracle.js",
   "devDependencies": {
     "eslint": "^8.22.0"
