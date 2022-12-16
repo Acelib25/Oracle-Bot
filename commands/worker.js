@@ -349,13 +349,13 @@ module.exports = {
                 return out;
             }
             if (msg.toString().replace(/([\,])+/g, "\n").length >= 2000) {
-                await interaction.reply({content: "You got a lot, please give me a moment...\n", ephemeral: true});
+                await interaction.reply({content: "You got a lot, please give me a moment...\n"});
                 for (const i of chunkString(msg.toString().replace(/([\,])+/g, "\n"))){
                     //console.log(`A:\n\n\n${i}`);
-                    interaction.followUp({content: i, ephemeral: true});
+                    interaction.followUp({content: i});
                 }
             } else {
-                await interaction.reply({content: msg.toString().replace(/([\,])+/g, "\n"), ephemeral: true});
+                await interaction.reply({content: msg.toString().replace(/([\,])+/g, "\n")});
             }
             Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
             return { message: 'E' }
