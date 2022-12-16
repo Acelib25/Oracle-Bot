@@ -15,7 +15,9 @@ module.exports = {
 		const item = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemName } } });
         let amount = interaction.options.getInteger('amount');
 
-		if (!item) return interaction.reply(`That item doesn't exist.`);
+		if (!item) {interaction.reply(`That item doesn't exist.`); return { message: await interaction.fetchReply() };}
+        if (item.name == "Ember") {interaction.reply(`Iseden: An Ember is not something that can be bought, it is earned.`); return { message: await interaction.fetchReply() };}
+        else if (item.name == "Dragon's Fang") {interaction.reply(`Unless you want to brave reaching your hand in Sovaeris's mouth you can't buy this.`); return { message: await interaction.fetchReply() };}
         if (!amount) amount = 1;
 		
 		if (item.cost * amount > currency.getBalance(interaction.member.user.id).toFixed(2)) {

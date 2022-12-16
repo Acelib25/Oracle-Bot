@@ -31,6 +31,8 @@ module.exports = {
 		console.log(numberHad)
 		
 		if (itemsHad.includes(`${item.name}`) && numberHad[itemsHad.indexOf(item.name)] >= amount){
+            if (item.name == "Ember") {interaction.reply(`Iseden: How dare you try and sell my Ember!`); return { message: await interaction.fetchReply() };}
+            else if (item.name == "Dragon's Fang") {interaction.reply(`Um, it's attached to you dumbass.`); return { message: await interaction.fetchReply() };}
 			currency.add(interaction.member.user.id, amount*(item.cost*0.85).toFixed(2));
 			for (k=1; k <= amount; k++){
 				await user.removeItem(item);
