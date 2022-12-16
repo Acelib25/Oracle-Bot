@@ -36,7 +36,7 @@ module.exports = {
             sub
             .setName('count')
             .setDescription('Counts to number!')
-            .addIntegerOption(option => option.setName('target').setDescription('How high?').setMaxValue(100)),
+            .addIntegerOption(option => option.setName('target').setDescription('How high?').setMaxValue(500)),
         ).addSubcommand(sub => 
             sub
             .setName('eightball')
