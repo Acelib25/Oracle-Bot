@@ -143,7 +143,7 @@ module.exports = {
                     console.log(workerID[index]);
                     console.log(index)
                     switch (workerID[index]){
-                        case 'Begger':
+                        case 'Beggar':
                             pity = 0;
                             opt = [
                                 {item: 0, weight: 2000 }, 
@@ -165,9 +165,9 @@ module.exports = {
                             wrk = Workers.create({
                                 user_id: interaction.member.user.id,
                                 claim_stamp: stamp.valueOf(),
-                                worker_id: "Begger",
+                                worker_id: "Beggar",
                             });
-                            obj = codeBlock(`Your favorite Begger begged and bagged ${pity} ⵇ for you! They will be ready again on [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(`Your favorite Beggar begged and bagged ${pity} ⵇ for you! They will be ready again on [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             break;
                         case 'Waitress':
