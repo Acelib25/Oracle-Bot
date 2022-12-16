@@ -16,6 +16,12 @@ module.exports = {
 			)
 		.addSubcommand(sub => 
 			sub
+			.setName("workers")
+			.setDescription("check for workers")
+			.addUserOption(option => option.setName('user').setDescription('Who? (Leave blank for yourself)'))
+		)
+		.addSubcommand(sub => 
+			sub
 			.setName("money")
 			.setDescription("check for money")
 			.addUserOption(option => option.setName('user').setDescription('Who? (Leave blank for yourself)'))
@@ -31,6 +37,18 @@ module.exports = {
 			if (!items.length) return interaction.editReply(`${target.tag} has nothing!`);
 
 			await interaction.editReply(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.item.name}`).join(', ')}`);
+			return { message: await interaction.fetchReply(), args: {none:"none"} }
+		}
+
+		else if (interaction.options.getSubcommand() === 'workers') {
+			await interaction.reply("Loading")
+			const target = interaction.options.getUser('user') ?? interaction.member.user;
+			const user = await Users.findOne({ where: { user_id: target.id } });
+			const items = await user.getWorkers();
+
+			if (!items.length) return interaction.editReply(`${target.tag} has nothing!`);
+
+			await interaction.editReply(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.worker.name}`).join(', ')}`);
 			return { message: await interaction.fetchReply(), args: {none:"none"} }
 		}
 

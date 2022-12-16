@@ -11,7 +11,7 @@ module.exports = {
 		.setName('beg')
 		.setDescription('Beg for money'),
 	async execute(interaction, currency) {
-		await interaction.reply("Loading")
+		await interaction.deferReply({ephemeral: true});
         function weighted_random(options) {
             var i;
         
@@ -31,13 +31,13 @@ module.exports = {
 
         async function beg(){
             let z = place[blacklist.indexOf(interaction.member.user.id)]
-            while(z < 11){
+            while(z < 10){
+                z++
                 await wait(30000)
                 pity = weighted_random(opt);
                 currency.add(interaction.member.user.id, pity);
-                message.push(`\n${z}/10 tries: You got ${pity} ⵇ.`);
-                await interaction.editReply(message.toString().replace(",", " "))
-                z++
+                message.push(`${z}/10 tries: You got ${pity} ⵇ.`);
+                await interaction.editReply(message.toString().replace(/([\,])+/g, "\n"))
                 place[blacklist.indexOf(interaction.member.user.id)] = z;
             }
 
@@ -68,7 +68,7 @@ module.exports = {
         let message = ["Begging for 5 min..."]
         blacklist.push(interaction.member.user.id);
         place.push(0);
-        await interaction.editReply(message.toString().replace(",", " "))
+        await interaction.editReply(message.toString().replace(/([\,])+/g, "\n"))
 
         let done = await beg();
 

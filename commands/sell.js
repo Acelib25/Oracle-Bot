@@ -8,12 +8,15 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('sell')
 		.setDescription('Sell to the Shop')
-		.addStringOption(option => option.setName('item').setDescription('What would you like to sell?')),
+		.addStringOption(option => option.setName('item').setDescription('What would you like to sell?'))
+		.addIntegerOption(option => option.setName('amount').setDescription('How many?').setMinValue(1)),
 	async execute(interaction, currency) {
 		const itemName = interaction.options.getString('item');
 		const item = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemName } } });
+		let amount = interaction.options.getInteger('amount');
 
 		if (!item) return interaction.reply(`That item doesn't exist.`);
+		if (!amount) amount = 1;
 		
 		const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
 		const items = await user.getItems();
@@ -27,15 +30,17 @@ module.exports = {
 		console.log(itemsHad)
 		console.log(numberHad)
 		
-		if (itemsHad.includes(`${item.name}`) && numberHad[itemsHad.indexOf(item.name)] > 0){
-			currency.add(interaction.member.user.id, (item.cost*0.70).toFixed(2));
-			await user.removeItem(item);
-			await interaction.reply(`You've sold: ${item.name} for ${(item.cost*0.70).toFixed(2)} ⵇ.`)
+		if (itemsHad.includes(`${item.name}`) && numberHad[itemsHad.indexOf(item.name)] >= amount){
+			currency.add(interaction.member.user.id, amount*(item.cost*0.85).toFixed(2));
+			for (k=1; k <= amount; k++){
+				await user.removeItem(item);
+			}
+			await interaction.reply(`You've sold ${amount}: ${item.name} for ${amount*(item.cost*0.85).toFixed(2)} ⵇ.`)
 		} else {
-			await interaction.reply(`You don't have ${item.name}.`)
+			await interaction.reply(`You don't have ${amount} ${item.name}.`)
 		}
 
-		return { message: `You've sold: ${item.name} for ${(item.cost*0.70).toFixed(2)} ⵇ.` }
+		return { message: `You've sold ${amount}: ${item.name} for ${amount*(item.cost*0.85).toFixed(2)} ⵇ.` }
 		},
 	async args(interaction) {
 		return { none: "None",}

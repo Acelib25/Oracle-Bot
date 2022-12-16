@@ -1,14 +1,9 @@
 /* eslint-disable no-unused-vars */
-const { SlashCommandBuilder, AttachmentBuilder, ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
+const { SlashCommandBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const Canvas = require('@napi-rs/canvas');
-const { Discord } = require('discord.js');
-const axios = require('axios');
 const fs = require('node:fs');
 const path = require('node:path');
 const wait = require('node:timers/promises').setTimeout;
-const { Users, CurrencyShop } = require('../dbObjects.js');
-const { Op } = require('sequelize');
 const packageInfo = require('../package.json');
 let wack_id = [];
 let wack_bonks = [];

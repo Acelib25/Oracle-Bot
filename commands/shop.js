@@ -11,7 +11,7 @@ module.exports = {
 	async execute(interaction, currency) {
 		
 		const items = await CurrencyShop.findAll();
-		await interaction.reply(codeBlock(items.map(i => `${i.name}: ${i.cost} ⵇ`).join('\n')));
+		await interaction.reply(codeBlock(items.sort((a, b) => a.cost - b.cost).map(i => `${i.name}: ${i.cost} ⵇ`).join('\n')));
 		return { message: await interaction.fetchReply() }
 	},
 	async args(interaction) {
