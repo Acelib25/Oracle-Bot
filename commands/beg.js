@@ -12,6 +12,9 @@ module.exports = {
 		.setDescription('Beg for money'),
 	async execute(interaction, currency) {
 		await interaction.deferReply();
+        await interaction.editReply("Stop begging and get a job! Ace aint fixing this command anytime soon.")
+        return { message: await interaction.fetchReply() }
+
         function weighted_random(options) {
             var i;
         
