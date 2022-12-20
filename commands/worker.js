@@ -75,7 +75,6 @@ module.exports = {
                 return interaction.reply(`You currently have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ, but the ${item.name} costs ${item.cost} ⵇ!`);
             }
             const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
-            if(interaction.member.user.id != '344143763918159884') {currency.add(interaction.member.user.id, item.cost * -1)};
             await user.addWorker(item);
             currency.add(interaction.member.user.id, item.cost * -1);
 

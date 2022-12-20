@@ -12,8 +12,8 @@ module.exports = {
 		.setDescription('Beg for money'),
 	async execute(interaction, currency) {
 		await interaction.deferReply();
-        await interaction.editReply("Stop begging and get a job! Ace aint fixing this command anytime soon.")
-        return { message: await interaction.fetchReply() }
+        //await interaction.editReply("Stop begging and get a job! Ace aint fixing this command anytime soon.")
+        //return { message: await interaction.fetchReply() }
 
         function weighted_random(options) {
             var i;
@@ -33,6 +33,7 @@ module.exports = {
         }
 
         async function beg(){
+            console.log("Start Begging")
             let z = place[blacklist.indexOf(interaction.member.user.id)]
             while(z < 10){
                 z++
@@ -51,20 +52,20 @@ module.exports = {
                 return value < 11;
             });
 
-            return 0;
+            return "Done Begging";
         }
 
         if (blacklist.includes(interaction.member.user.id)){return interaction.editReply("You begged louder but no one cares...")}
 
         let opt = [
-            {item: 0, weight: 2500 }, 
-            {item: 0.1, weight: 250 }, 
-            {item: 0.5, weight: 250 }, 
-            {item: 0.75, weight: 150 }, 
-            {item: 1, weight: 100 },
-            {item: 5, weight: 50 },
-            {item: 10, weight: 5 },
-            {item: -5, weight: 300 }
+            {item: 0, weight: 2000 }, 
+            {item: 0.1, weight: 500 }, 
+            {item: 0.5, weight: 500 }, 
+            {item: 0.75, weight: 300 }, 
+            {item: 1, weight: 200 },
+            {item: 5, weight: 100 },
+            {item: 10, weight: 50 },
+            {item: -5, weight: 1 }
         ]
         
         let pity = 0;
@@ -74,6 +75,8 @@ module.exports = {
         await interaction.editReply(message.toString().replace(/([\,])+/g, "\n"))
 
         let done = await beg();
+
+        console.log(done);
 
         return { message: await interaction.fetchReply() }
 		},
