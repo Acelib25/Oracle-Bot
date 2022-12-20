@@ -114,7 +114,7 @@ client.on('interactionCreate', async interaction => {
 				],
 				timestamp: new Date().toISOString(),
 			}
-			client.guilds.cache.get('747587696867672126').channels.cache.get('747587927261052969').send({ embeds: [feedbackEmbed]})
+			client.guilds.cache.get('792894937196134421').channels.cache.get('1054834188064411669').send({ embeds: [feedbackEmbed]})
 			
 		} catch (error) {
 			console.error(error);
