@@ -308,7 +308,7 @@ module.exports = {
                             wrk = Workers.create({
                                 user_id: interaction.member.user.id,
                                 claim_stamp: stamp.valueOf(),
-                                worker_id: "Waitress",
+                                worker_id: "Haxor",
                             });
                             obj = codeBlock(`While browsing OnlyCorns your screen freezes and a pop-up saying you were mailed a free ${pity} appears! Must be that Haxor you hired to help you win Call of Booty. They may give you something again after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);

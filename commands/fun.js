@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const wait = require('node:timers/promises').setTimeout;
 const packageInfo = require('../package.json');
+const acelib = require('../../aceslib.js');
 let wack_id = [];
 let wack_bonks = [];
 let blacklist = [];
@@ -146,6 +147,7 @@ module.exports = {
 
             msgOptions = [
                 "I have decided that your mother is a utter ||delight||.",
+                "As dad would say: *\"Sign the paper, then we can talk about how far I am willing to go. We'll see if it's kinky when your ||[REDACTED]|| is ||[REDACTED]|| half way through your ||[REDACTED]|| and ||[REDACTED]|| is spilling all over the floor.\"*",
                 "After some thought I have decided that you are lame.",
                 "I have asked the Entropy to reveal your future, I regret to say you have none.",
                 "The Entropy has told me you are pretty cool. :sunglasses:",
@@ -154,16 +156,47 @@ module.exports = {
                 "May both sides of your pillow be hot.",
                 `${name}: \\**Donates their body to science*\\*\n\nScience: \**Donates the body to Goodwill*\*`,
                 "I hope your body gets donated to science",
-                "+10"
+                "+10",
+                "Piss is stored in your sinuses. At least thats what Nathan told me. :)",
+                "So help me I will return you to the Ashes.",
+                "You are a cakeless hooligan.",
+                "Blessing be upon ye.",
+                "Woe be upon ye without **cake**",
+                "Did you know <@792567794234556417> is my brother!",
+                `JS: What did I tell you about ${name}?\nOracle: Keep Nathan and his concrete away from their sinuses?\nJS: Well yes, but I mean that other thing I told you.\nOracle: Don't listen to Nathan when he says to invert their knees for mocking him?\nJS: ...\nJS: I said that too, yes. I mean that other other thing I told you.\nOracle: Oh! Dad wants their brain so hold them still!\nJS: \*pulls out saw\* Yes, hold them still. Now lets go make father proud.`,
+                `${acelib.salt.prepped.named(name)}`,
+                `${acelib.salt.prepped.named(name)}`,
+                `${choose(acelib.salt.prepped.nameless)}`,
+                `${choose(acelib.salt.prepped.nameless)}`,
+                "Step off bitch.",
+                "Congratulations. I had impossibly low expectations for you and you still disappointed me.",
+                "Based on your recent evaluation, you've hit rock bottom and started showing signs of digging.",
+                "+special",
+                "If I had hands you would catch them.",
+                "Potassium gives off more brainwaves than this specimen.",
+                "Dad was right about you."
+
+
             ]
 
             let decision = choose(msgOptions)
 
-            if (decision == '+10'){
+            if (decision == '+10')
+            {
                 decision = 'I see great fortune in your future! (+10 ⵇ)'
                 currency.add(interaction.member.user.id, 10)
             }
-            
+            else if (decision == '+special'){
+                switch (interaction.member.user.id){
+                    case (472540805966331925):
+                        decision = "You always impress me daddy sov."
+                        break;
+                    case (718599764173914193):
+                        decision = "Tenno you bonehead. ~ Pin, New Years Eve 2022"
+                        break;
+                }
+            }
+
             await interaction.deferReply();
             await wait(5000);
             await interaction.editReply(decision);
@@ -312,223 +345,12 @@ module.exports = {
                 return choices[index];
             }
 
-            let adj = [
-                "stupid", 
-                "disgusting", 
-                "putrid", 
-                "lucid", 
-                "haggard", 
-                "dense", 
-                "sub-par", 
-                "terrible", 
-                "lazy", 
-                "idiot", 
-                "profain", 
-                "aggressive", 
-                "desperate",
-                "saggy",
-                'butt munching',
-                'discount',
-                'Kroger brand',
-                'bargain bin',
-                'yellow',
-                'green',
-                'pallid',
-                'ghastly',
-                'maidenless',
-                'goldfish brained',
-                'tit witted',
-                'dog breathed',
-                'protein lacking',
-                'vertically challenged',
-                'soot eating',
-                'toaster licking',
-                'fucking',
-                'shit eating',
-                'half brained',
-                'half baked',
-                'pint sized',
-                'whorebagging',
-                'grandma-shoving',
-                'taxidermy tasting',
-                'cat kicking',
-                'ball busting ',
-                'fictitious',
-                
-            ]
-
-            let curse = [
-                "poo", 
-                "fuck", 
-                "shit", 
-                "crap", 
-                "bitch", 
-                "ass", 
-                "sack", 
-                "idiotic", 
-                "ice", 
-                "piss", 
-                "bloated", 
-                "turd",
-                "cunt",
-                "toe-sucking",
-                "dip-ass",
-                'dipshit',
-                'dryshite',
-                'gobshite',
-                'lardass',
-                'soot eating',
-                'gay',
-                'mismatched',
-                'simple',
-                'lackluster',
-                'lying',
-                'lippy',
-                'crab infested',
-                'spider infested ',
-                'vacant',
-                'rickrolled',
-                'short nosed ',
-                'crusty',
-                'shifty eyed',
-                'talentless',
-                'fatherless',
-                'loveless',
-                'loathsome',
-                'spawn camping',
-                'playdough brained',
-                'scandalous',
-                'piss soaked',
-
-            
-            ]
-
-            let noun = [
-                "nugget", 
-                "ball", 
-                "pole", 
-                "wall", 
-                "llama", 
-                "dog", 
-                "cat", 
-                "donkey", 
-                "cup", 
-                "brain", 
-                "mouse", 
-                "butt", 
-                "idiot",
-                "hat", 
-                "head", 
-                "pile", 
-                "crack",
-                'goblin',
-                'consumer',
-                'eater',
-                'enjoyer',
-                'simp',
-                'finch fiddler',
-                'dipshit',
-                'ass-munch',
-                'pygmy',
-                'pile of used goods',
-                'dumpster fire',
-                'langer',
-                'lickarse',
-                'gombeen',
-                'has-been, or should I say never-was',
-                'sard',
-                'lardo',
-                'peen',
-                'weeny',
-                'crybaby bitch boi',
-                'wankler',
-                'wrinkle',
-                'frisbee',
-                'clown :clown:',
-                'ring dingler',
-                'kraft single',
-                'lone fuck',
-                'fuckler',
-                'fuck nugget',
-                'bitch brisket',
-                'limp noodle',
-                'foot lettuce',
-                'flat fuck',
-                'asshat',
-                'dingle donkey',
-                'dingle berry',
-                'foot enthusiast',
-                'wang dangler',
-                'truck fucker',
-                'milk drinker',
-                'paint watcher ',
-                'finger-er',
-                'simpleton',
-                'pimpledick',
-                'imp',
-                'whorebagger',
-                'uncle fucker',
-                'nit',
-                'angler',
-                'cornhole',
-                'fictitious spider monkey',
-                'factless baseball card',
-                'green brick (Ask Ace)',
-                'lightless lamp coil',
-                'short stop',
-                '90\'s reject',
-                'voldemort',
-                'deflated Beach ball',
-                'wannabe dildo',
-                'bulldozer',
-                'pond scum',
-                'spaz',
-                'wrench',
-                'used condom',
-                'great honking fat lump',
-                
-
-
-            ]
-
-            let finisher = [
-                ' with dogshit ergonomics',
-                ' with no life',
-                ' that simps for e-girls',
-                ' with no bitches',
-                ' who even the grinch would find disgusting',
-                ' with the guinness world record for ugliest person, if you could even be called human',
-                ' who gets off sucking toes',
-                ' who will forever be maidenless',
-                ', honka honka :clown:',
-                ', may you get no bitches',
-                '. I hope both sides of your pillow are warm >:) ',
-                '. I hope you step on a pile of legos >:) ',
-                '. Someone call the tard wranglers cause this retard missed the short bus',
-                '. Someone call a number 15 cause this guy is the new foot lettuce',
-                ' with zero chance to get laid',
-                ' who will die alone, and be buried as such',
-                ' just making this insult for you was a waste of my time, and I spend most of my day doing nothing',
-                ', just ask your mother when she gets come from the corner of whore and main',
-                ', just ask your father, oh wait, he is still getting milk',
-                ', I would compare you to a pile of green bricks, ugly, and useless',
-                '. If I had hands I would rip your spine out your mouth',
-                '. You look like you can suck a golf ball through a garden hose',
-                '. Damn, God sneezed when he made you',
-                '. Looks like you could suck the chrome off a trailer hitch',
-                '. If being a loser was a competition you\'d come in second. Cause your a loser',
-                ' and by the way, those female hormones won\'t cure male pattern baldness',
-                '. What is your major malfunction, numb-nuts',
-                '. Ding dong bitch the chicken in here',
-                ', ding ding ding, retard alert, retard alert',
-            ]
-
             let out;
             if(!taggedUser){
-                out = (`<@${interaction.member.user.id}> you are a ${choose(adj)} ${choose(curse)} ${choose(noun)}${choose(finisher)}!`)
+                out = (`<@${interaction.member.user.id}> you are a ${choose(acelib.salt.adjectives)} ${choose(acelib.salt.curses)} ${choose(acelib.salt.nouns)}${choose(acelib.salt.finishers)}!`)
 
             } else {
-                out = (`${taggedUser} you are a ${choose(adj)} ${choose(curse)} ${choose(noun)}${choose(finisher)}!`)
+                out = (`${taggedUser} you are a ${choose(acelib.salt.adjectives)} ${choose(acelib.salt.curses)} ${choose(acelib.salt.nouns)}${choose(acelib.salt.finishers)}!`)
     
             }
             

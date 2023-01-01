@@ -9,9 +9,9 @@
     "sqlite3": "^5.0.11"
   },
   "name": "oracle-bot",
-  "version": "2.1.0",
-  "versionName": "Get To Work!",
-  "description": "Workers workers, what do they do?",
+  "version": "2.1.1",
+  "versionName": "Some nice updates!",
+  "description": "I say more",
   "main": "oracle.js",
   "devDependencies": {
     "eslint": "^8.22.0"
