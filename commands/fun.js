@@ -146,17 +146,17 @@ module.exports = {
             }
 
             msgOptions = [
-                "I have decided that your mother is a utter ||delight||.",
+                //"I have decided that your mother is a utter ||delight||.",
                 "As dad would say: *\"Sign the paper, then we can talk about how far I am willing to go. We'll see if it's kinky when your ||[REDACTED]|| is ||[REDACTED]|| half way through your ||[REDACTED]|| and ||[REDACTED]|| is spilling all over the floor.\"*",
-                "After some thought I have decided that you are lame.",
+                //"After some thought I have decided that you are lame.",
                 "I have asked the Entropy to reveal your future, I regret to say you have none.",
-                "The Entropy has told me you are pretty cool. :sunglasses:",
+                //"The Entropy has told me you are pretty cool. :sunglasses:",
                 "May your crops wither and your animals become diseased.",
-                "My ponderings has concluded, you are a hoe.",
-                "May both sides of your pillow be hot.",
+                //"My ponderings has concluded, you are a hoe.",
+                //"May both sides of your pillow be hot.",
                 `${name}: \\**Donates their body to science*\\*\n\nScience: \**Donates the body to Goodwill*\*`,
                 "I hope your body gets donated to science",
-                "+10",
+                //"+10",
                 "Piss is stored in your sinuses. At least thats what Nathan told me. :)",
                 "So help me I will return you to the Ashes.",
                 "You are a cakeless hooligan.",
