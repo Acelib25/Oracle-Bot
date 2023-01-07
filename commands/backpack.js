@@ -1,76 +1,72 @@
 /* eslint-disable no-unused-vars */
 const { SlashCommandBuilder, codeBlock } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
-const { Users, CurrencyShop } = require('../dbObjects.js');
+const { Users, CurrencyShop, WorkerShop, Workers } = require('../dbObjects.js');
 const { Op } = require('sequelize');
+const aceslib = require('../../aceslib.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('backpack')
 		.setDescription('Check your backpack.')
-		.addSubcommand(sub => 
-			sub
-			.setName("items")
-			.setDescription("check for items")
-			.addUserOption(option => option.setName('user').setDescription('Who? (Leave blank for yourself)'))
-			)
-		.addSubcommand(sub => 
-			sub
-			.setName("workers")
-			.setDescription("check for workers")
-			.addUserOption(option => option.setName('user').setDescription('Who? (Leave blank for yourself)'))
-		)
-		.addSubcommand(sub => 
-			sub
-			.setName("money")
-			.setDescription("check for money")
-			.addUserOption(option => option.setName('user').setDescription('Who? (Leave blank for yourself)'))
-			)
-		,
+        .addUserOption(option => option.setName('user').setDescription('Who? (Leave blank for yourself)')),
 	async execute(interaction, currency) {
-		if (interaction.options.getSubcommand() === 'items') {
-			await interaction.reply("Loading")
-			const target = interaction.options.getUser('user') ?? interaction.member.user;
-			const user = await Users.findOne({ where: { user_id: target.id } });
-			const items = await user.getItems();
+		
+        await interaction.deferReply();
+        const target = interaction.options.getUser('user') ?? interaction.member.user;
+        const deployed = await Workers.findAll({ where: { user_id: target.id } });
+        const user = await Users.findOne({ where: { user_id: target.id } });
+        const items = await user.getItems();
+        const workers = await user.getWorkers();
+        const workerID = deployed.map(i => `${i.worker_id}`);
 
-			if (!items.length) return interaction.editReply(`${target.tag} has nothing!`);
+        let count = workerID.reduce((cnt, cur) => (cnt[cur] = cnt[cur] + 1 || 1, cnt), {});
 
-			await interaction.editReply(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.item.name}`).join(', ')}`);
-			return { message: await interaction.fetchReply(), args: {none:"none"} }
+        let deployedCount = []
+
+        for (const [key, value] of Object.entries(count)) {
+            deployedCount.push(`${key}: ${value}`);
+        }
+
+        if (deployedCount[0] == undefined) {
+            deployedCount.push(`${target.tag} deployed nothing!`)
+        }
+
+        deployedCount = deployedCount.join('\n');
+
+        let itemSect = `${target.tag} has nothing!`;
+        let workerSect = `${target.tag} is maidenless!`
+        let cash = (`${currency.getBalance(target.id).toFixed(2)} ⵇ`);
+        
+        if (!items.length) itemSect = (`${target.tag} has nothing!`);
+        else {itemSect = `${items.map(i => `${i.amount} ${i.item.name}`).join('\n')}`}
+
+        itemSect = itemSect.replace('Inf', '∞');
+
+        if (!workers.length) workerSect = (`${target.tag} is maidenless!`);
+		else{workerSect = `${workers.map(i => `${i.amount} ${i.worker.name}`).join('\n')}`}
+
+        if (target.id == 1010227827481784411){
+            deployedCount = "Ace: 1"
+        }
+
+        const infoEmbed = {
+            color: 0x2c806a,
+            title: `${target.tag}'s Backpack`,
+            image: {
+				url: target.displayAvatarURL({ dynamic: true, size: 256 * 2}),
+			},
+            fields: [
+                { name: 'Money', value: `${cash}`},
+                { name: 'Items', value: `${itemSect}`},
+                { name: 'Workers', value: `${workerSect}`},
+                { name: 'Deployed Workers', value: `${deployedCount}`},
+			],
+            timestamp: new Date().toISOString(),
 		}
-
-		else if (interaction.options.getSubcommand() === 'workers') {
-			await interaction.reply("Loading")
-			const target = interaction.options.getUser('user') ?? interaction.member.user;
-			const user = await Users.findOne({ where: { user_id: target.id } });
-			const items = await user.getWorkers();
-
-			if (!items.length) return interaction.editReply(`${target.tag} has nothing!`);
-
-			await interaction.editReply(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.worker.name}`).join(', ')}`);
-			return { message: await interaction.fetchReply(), args: {none:"none"} }
-		}
-
-		else if (interaction.options.getSubcommand() === 'money'){
-			
-			const taggedUser = interaction.options.getUser('user');
-			await interaction.reply("Loading")
-			let out;
-			if(!taggedUser){
-				out = (`You have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ`)
-
-			} else {
-				out = (`${taggedUser} has ${currency.getBalance(taggedUser.id).toFixed(2)} ⵇ`)
-
-			}
-			
-			
-			//await interaction.deferReply();
-			//await wait(1000);
-			await interaction.editReply(out);
-			return { message: await interaction.fetchReply(), args: {none:"none"} }
-		}
+		interaction.editReply({ embeds: [infoEmbed] })
+        aceslib.embed(interaction.client, infoEmbed);
+    	return { message: "[EMBED]", args: {none:"none"} }
 	},
 	async args(interaction) {
 		return { none: "None",}
