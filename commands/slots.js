@@ -6,6 +6,7 @@ const { Discord } = require('discord.js');
 const axios = require('axios');
 const fs = require('node:fs');
 const wait = require('node:timers/promises').setTimeout;
+const aceslib = require('../../aceslib');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,7 +21,7 @@ module.exports = {
         function isNumeric(num){
 			return !isNaN(num)
 		}
-        if(parseInt(currency.getBalance(interaction.member.user.id)) <  bet){
+        if(parseInt(currency.getBalance(interaction.member.user.id)) <  bet && bet != 625){
             return await interaction.editReply("You don't have that much to bet!")
         }
         let rolls = [':moneybag:',':low_brightness:',':star:',':cherries:',':heart:',':game_die:']
@@ -34,9 +35,11 @@ module.exports = {
         
         
 
-        let slot1 = randomBetween(1,6);
-        let slot2 = randomBetween(1,6);
-        let slot3 = randomBetween(1,6);
+        let slot1 = randomBetween(0,5);
+        let slot2 = randomBetween(0,5);
+        let slot3 = randomBetween(0,5);
+
+        let preset = `Slots: ${slot1} ${slot2} ${slot3}`
 
         let slot1top,slot2top,slot3top,slot1bottom,slot2bottom,slot3bottom;
 
@@ -46,6 +49,16 @@ module.exports = {
         let stat = "....";
 
         //await interaction.reply("Loading");
+
+        // n n-1 n-1 is what you want to roll to win
+        /*
+        0 5 5
+        1 0 0
+        2 1 1
+        3 2 2
+        4 3 3 
+        5 4 4
+        */
 
         for(k=0; k < 16; k++){
             if ( a < 8) {
@@ -89,7 +102,10 @@ module.exports = {
 
         }
 
-        if(slot1 == slot2 && slot2 == slot3){  
+        if (bet == 625){
+            stat = `\n\n DEBUG:\n Start: ${preset}\n End: Slots: ${slot1} ${slot2} ${slot3}`;
+        }
+        else if(slot1 == slot2 && slot2 == slot3){  
             stat = ` Win! Your bet was doubled!\nYou gained ${bet*2} ⵇ`
             currency.add(interaction.member.user.id, bet*2);
         } 
@@ -105,6 +121,7 @@ module.exports = {
             currency.add(interaction.member.user.id, -bet);
         }
         await wait(250);
+        aceslib.msg(interaction.client, `Start: ${preset}\n End: Slots: ${slot1} ${slot2} ${slot3}`)
         await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nYou bet ${bet} ⵇ and you${stat}`)
 		
         return { message: await interaction.fetchReply() }

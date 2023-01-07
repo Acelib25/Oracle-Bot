@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const wait = require('node:timers/promises').setTimeout;
 const packageInfo = require('../package.json');
-const acelib = require('../../aceslib.js');
+const aceslib = require('../../aceslib');
 let wack_id = [];
 let wack_bonks = [];
 let blacklist = [];
@@ -164,10 +164,10 @@ module.exports = {
                 "Woe be upon ye without **cake**",
                 "Did you know <@792567794234556417> is my brother!",
                 `JS: What did I tell you about ${name}?\nOracle: Keep Nathan and his concrete away from their sinuses?\nJS: Well yes, but I mean that other thing I told you.\nOracle: Don't listen to Nathan when he says to invert their knees for mocking him?\nJS: ...\nJS: I said that too, yes. I mean that other other thing I told you.\nOracle: Oh! Dad wants their brain so hold them still!\nJS: \*pulls out saw\* Yes, hold them still. Now lets go make father proud.`,
-                `${acelib.salt.prepped.named(name)}`,
-                `${acelib.salt.prepped.named(name)}`,
-                `${choose(acelib.salt.prepped.nameless)}`,
-                `${choose(acelib.salt.prepped.nameless)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
                 "Step off bitch.",
                 "Congratulations. I had impossibly low expectations for you and you still disappointed me.",
                 "Based on your recent evaluation, you've hit rock bottom and started showing signs of digging.",
@@ -198,6 +198,7 @@ module.exports = {
             }
 
             await interaction.deferReply();
+            aceslib.msg(interaction.client, `I did a big think. ${decision}`)
             await wait(5000);
             await interaction.editReply(decision);
             return { message: await interaction.fetchReply(), args: { none: "none" } }
@@ -347,10 +348,10 @@ module.exports = {
 
             let out;
             if(!taggedUser){
-                out = (`<@${interaction.member.user.id}> you are a ${choose(acelib.salt.adjectives)} ${choose(acelib.salt.curses)} ${choose(acelib.salt.nouns)}${choose(acelib.salt.finishers)}!`)
+                out = (`<@${interaction.member.user.id}> you are a ${choose(aceslib.salt.adjectives)} ${choose(aceslib.salt.curses)} ${choose(aceslib.salt.nouns)}${choose(aceslib.salt.finishers)}!`)
 
             } else {
-                out = (`${taggedUser} you are a ${choose(acelib.salt.adjectives)} ${choose(acelib.salt.curses)} ${choose(acelib.salt.nouns)}${choose(acelib.salt.finishers)}!`)
+                out = (`${taggedUser} you are a ${choose(aceslib.salt.adjectives)} ${choose(aceslib.salt.curses)} ${choose(aceslib.salt.nouns)}${choose(aceslib.salt.finishers)}!`)
     
             }
             
