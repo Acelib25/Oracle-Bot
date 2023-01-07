@@ -13,7 +13,7 @@ module.exports = {
 	async execute(interaction, currency) {
 		const amount = interaction.options.getInteger('amount');
 		const target = interaction.options.getUser('user') ?? interaction.member.user;
-        if(interaction.member.user.id != '1054787604622606406') {
+        if(interaction.member.user.id != '1054787604622606406' && interaction.member.user.id != '344143763918159884') {
             await interaction.reply(`Ace Only!`); 
             return { message: "none" }
         }
