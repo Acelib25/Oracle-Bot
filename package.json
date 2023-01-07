@@ -9,7 +9,7 @@
     "sqlite3": "^5.0.11"
   },
   "name": "oracle-bot",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "versionName": "Some nice updates!",
   "description": "I say more",
   "main": "oracle.js",

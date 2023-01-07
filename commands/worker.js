@@ -174,7 +174,8 @@ module.exports = {
                             opt = [
                                 {item: "Tea", weight: 50 }, 
                                 {item: "Coffee", weight: 40 }, 
-                                {item: "Cake", weight: 10 }
+                                {item: "Cake", weight: 10 },
+                                {item: "Egg Borgur", weight: 1 }
                             ]
                             pity = weighted_random(opt);
                             de = new Date();
@@ -213,10 +214,9 @@ module.exports = {
                         case 'Miner':
                             pity = "Nothin";
                             opt = [
-                                {item: "Gold", weight: 5 },
-                                {item: "Iron", weight: 15 }, 
-                                {item: "Coal", weight: 30 }, 
-                                {item: "Entropy", weight: 50 }
+                                {item: "Gold", weight: 15 },
+                                {item: "Iron", weight: 30 }, 
+                                {item: "Coal", weight: 50 }, 
                             ]
                             pity = weighted_random(opt);
                             de = new Date();
