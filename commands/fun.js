@@ -175,8 +175,6 @@ module.exports = {
                 "If I had hands you would catch them.",
                 "Potassium gives off more brainwaves than this specimen.",
                 "Dad was right about you."
-
-
             ]
 
             let decision = choose(msgOptions)
@@ -373,8 +371,12 @@ module.exports = {
 
         
         else if (interaction.options.getSubcommand() === 'say') {
-            const message = interaction.options.getString('message');
+            let message = interaction.options.getString('message');
             const img = interaction.options.getAttachment('image');
+
+            if (!message){
+                message = "Failed";
+            }
 
             await interaction.reply({content: "Ok, I'll say that", ephemeral: true });
             if(img){

@@ -53,9 +53,6 @@ module.exports = {
         const infoEmbed = {
             color: 0x2c806a,
             title: `${target.tag}'s Backpack`,
-            image: {
-				url: target.displayAvatarURL({ dynamic: true, size: 256 * 2}),
-			},
             fields: [
                 { name: 'Money', value: `${cash}`},
                 { name: 'Items', value: `${itemSect}`},
@@ -65,7 +62,7 @@ module.exports = {
             timestamp: new Date().toISOString(),
 		}
 		interaction.editReply({ embeds: [infoEmbed] })
-        aceslib.embed(interaction.client, infoEmbed);
+        //aceslib.embed(interaction.client, infoEmbed);
     	return { message: "[EMBED]", args: {none:"none"} }
 	},
 	async args(interaction) {

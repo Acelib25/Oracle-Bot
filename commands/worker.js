@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
-const { SlashCommandBuilder, codeBlock } = require('discord.js');
+const { SlashCommandBuilder, codeBlock, AttachmentBuilder } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
 const { Users, CurrencyShop, WorkerShop, Workers } = require('../dbObjects.js');
 const { Op } = require('sequelize');
+const aceslib = require('../../aceslib');
+const fs = require('node:fs');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -120,6 +122,7 @@ module.exports = {
         }
 
         else if (interaction.options.getSubcommand() === 'claim') {
+            await interaction.reply({content: "You got a lot, this might take a moment...\n"});
             const deployed = await Workers.findAll({ where: { user_id: interaction.member.user.id } });
 
             const stamp = deployed.map(i => i.claim_stamp);
@@ -128,19 +131,25 @@ module.exports = {
             console.log(stamp)
             console.log(workerID)
 
+            let log = [];
+
+            log.push(`stamp: ${stamp}`);
+            log.push(`workerID: ${workerID}`)
+
             let d = new Date().valueOf();
             let msg = ['Here are your results:'];
             let index = -1;
             const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
 
-            stamp.forEach( async element => {
+            for(element in stamp){
                 let pity = 0;
                 let opt = [];
-                let z,de,stamp,wrk,obj,item;
+                let z,de,stamp,wrk,obj,item, tmp;
                 index++;
                 if (element <= d){
                     console.log(workerID[index]);
                     console.log(index)
+                    log.push(`worker(${index}): ${workerID[index]}`)
                     switch (workerID[index]){
                         case 'Beggar':
                             pity = 0;
@@ -188,7 +197,8 @@ module.exports = {
                             obj = codeBlock(`Your waitress gave you a ${pity} on the house! They may give you something again after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            user.addItem(item);
+                            tmp = await user.addItem(item)
+                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
                             break;
                         case 'Teacher':
                             pity = "Nothin";
@@ -209,7 +219,8 @@ module.exports = {
                             obj = codeBlock(`Your old school teacher gave you a ${pity} that you forgot when you dropped out all those years ago! Who knows what else they might find after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            user.addItem(item);
+                            tmp = await user.addItem(item)
+                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
                             break;
                         case 'Miner':
                             pity = "Nothin";
@@ -229,7 +240,8 @@ module.exports = {
                             obj = codeBlock(`A miner threw a chunk of ${pity} at you! He looked pretty angry, best if you don't come back till after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            user.addItem(item);
+                            tmp = await user.addItem(item)
+                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
                             break;
                         case 'Fisher':
                             pity = "Nothin";
@@ -251,7 +263,8 @@ module.exports = {
                             obj = codeBlock(`A fisher slapped you with a ${pity} after he caught you fucking *his wife* on *his boat*! Luckily the ${pity} got stuck in your mouth and you made off with it. The old geezer has alzheimer's so he should forget sometime after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            user.addItem(item);
+                            tmp = await user.addItem(item)
+                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
                             break;
                         case 'Corn Star':
                             pity = "Nothin";
@@ -272,7 +285,8 @@ module.exports = {
                             obj = codeBlock(`Your best friend (who has a very successful OnlyCorns) gifted you ${pity}... Best not ask how they got that, infact you should ignore them till after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            user.addItem(item);
+                            tmp = await user.addItem(item)
+                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
                             break;
                         case 'Rug Dealer':
                             pity = "Nothin";
@@ -293,7 +307,8 @@ module.exports = {
                             obj = codeBlock(`Your other best friend, a successful Rug Dealer, brought you to his Rug Den and gave you a bag of ${pity}, and asked you to be his Rug Distributor. Just sell it before someone sees you, the next batch will be ready after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            user.addItem(item);
+                            tmp = await user.addItem(item)
+                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
                             break;
                         case 'Haxor':
                             pity = "Nothin";
@@ -313,50 +328,39 @@ module.exports = {
                             obj = codeBlock(`While browsing OnlyCorns your screen freezes and a pop-up saying you were mailed a free ${pity} appears! Must be that Haxor you hired to help you win Call of Booty. They may give you something again after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            user.addItem(item);
+                            tmp = await user.addItem(item)
+                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
                             break;
-                    }
+                    }       
                 } 
-            }); 
-            console.log("Done")
+            } 
             console.log(msg);
-            function chunkString(str) {
-                let out = [];
-                let inp = str.split("\n")
-                let z = 0;
-                
-                for(z=1; z <= inp.length; z+=5){
-                    let fout = [];
-                    try {
-                        fout.push(inp[z-1]);
-                    } catch(err){}
-                    try {
-                        fout.push(inp[z]);
-                    } catch(err){}
-                    try {
-                        fout.push(inp[z+1]);
-                    } catch(err){}
-                    try {
-                        fout.push(inp[z+2]);
-                    } catch(err){}
-                    try {
-                        fout.push(inp[z+3]);
-                    } catch(err){}
-                    out.push(fout.toString().replace(/([\,])+/g, "\n"))
-                }
 
-                return out;
-            }
+            log.push(`msg: {\n${msg.join("\n")}\n}`)
+
             if (msg.toString().replace(/([\,])+/g, "\n").length >= 2000) {
-                await interaction.reply({content: "You got a lot, please give me a moment...\n"});
-                for (const i of chunkString(msg.toString().replace(/([\,])+/g, "\n"))){
-                    //console.log(`A:\n\n\n${i}`);
-                    interaction.followUp({content: i});
+                if (msg.length > 10) {
+                    for (let i = 0; i < 10; i++){
+                        //console.log(`A:\n\n\n${i}`);
+                        interaction.followUp({content: msg[i]});
+                    }
+                    interaction.followUp(`Plus ${msg.length - 10} more...`)
+                }
+                else {
+                    for (const i of msg){
+                        //console.log(`A:\n\n\n${i}`);
+                        interaction.followUp({content: i});
+                    }
                 }
             } else {
-                await interaction.reply({content: msg.toString().replace(/([\,])+/g, "\n")});
+                await interaction.editReply({content: msg.join("\n")});
             }
             Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
+            
+            fs.writeFile("/home/cluster3/projects/Oracle-Bot/.tmp/claimLog.txt", `${log.join("\n")}`, e => console.log(e));
+            
+            interaction.client.guilds.cache.get('792894937196134421').channels.cache.get('1054834188064411669').send({message: `Claim Log\n\`\`\`diff\n- AcesLib\n\`\`\``, files: ["/home/cluster3/projects/Oracle-Bot/.tmp/claimLog.txt"] })
+            console.log("Done")
             return { message: 'E' }
         }
 

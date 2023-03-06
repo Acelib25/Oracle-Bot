@@ -13,6 +13,7 @@ const UserItems = require('./models/UserItems.js')(sequelize, Sequelize.DataType
 const UserWorkers = require('./models/UserWorkers.js')(sequelize, Sequelize.DataTypes);
 const Workers = require('./models/Workers.js')(sequelize, Sequelize.DataTypes);
 const WorkerShop = require('./models/WorkerShop.js')(sequelize, Sequelize.DataTypes);
+const aceslib = require('../aceslib');
 
 UserItems.belongsTo(CurrencyShop, { foreignKey: 'item_id', as: 'item' });
 UserWorkers.belongsTo(WorkerShop, { foreignKey: 'item_id', as: 'worker' });
@@ -23,12 +24,24 @@ Users.prototype.addItem = async function(item) {
 		where: { user_id: this.user_id, item_id: item.id },
 	});
 
-	if (userItem) {
-		userItem.amount += 1;
-		return userItem.save();
-	}
+	console.log("<====================>")
+	console.log("Checking for: ")
+	console.log(userItem)
+	console.log("<====================>")
 
-	return UserItems.create({ user_id: this.user_id, item_id: item.id, amount: 1 });
+	if (userItem != null) {
+		userItem.amount += 1;
+		userItem.save();
+		console.log("Item Exist: Success")
+		console.log("<====================>")
+		return "Item Exist: Success"
+	}
+	else {
+		UserItems.create({ user_id: this.user_id, item_id: item.id, amount: 1 });
+		console.log("Item Created: Success")
+		console.log("<====================>")
+		return "Item Created: Success"
+	}
 };
 
 Users.prototype.addWorker = async function(worker) {
