@@ -175,7 +175,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Beggar",
                             });
-                            obj = codeBlock(`Your favorite Beggar begged and bagged ${pity} ⵇ for you! They will be ready again on [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.beggar(pity));
                             msg.push(obj);
                             break;
                         case 'Waitress':
@@ -194,7 +194,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Waitress",
                             });
-                            obj = codeBlock(`Your waitress gave you a ${pity} on the house! They may give you something again after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.waitress(pity));
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
                             tmp = await user.addItem(item)
@@ -216,7 +216,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Teacher",
                             });
-                            obj = codeBlock(`Your old school teacher gave you a ${pity} that you forgot when you dropped out all those years ago! Who knows what else they might find after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.teacher(pity));
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
                             tmp = await user.addItem(item)
@@ -237,7 +237,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Miner",
                             });
-                            obj = codeBlock(`A miner threw a chunk of ${pity} at you! He looked pretty angry, best if you don't come back till after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.miner(pity));
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
                             tmp = await user.addItem(item)
@@ -260,7 +260,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Fisher",
                             });
-                            obj = codeBlock(`A fisher slapped you with a ${pity} after he caught you fucking *his wife* on *his boat*! Luckily the ${pity} got stuck in your mouth and you made off with it. The old geezer has alzheimer's so he should forget sometime after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.fisher(pity));
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
                             tmp = await user.addItem(item)
@@ -282,7 +282,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Corn Star",
                             });
-                            obj = codeBlock(`Your best friend (who has a very successful OnlyCorns) gifted you ${pity}... Best not ask how they got that, infact you should ignore them till after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.cornstar(pity));
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
                             tmp = await user.addItem(item)
@@ -304,7 +304,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Rug Dealer",
                             });
-                            obj = codeBlock(`Your other best friend, a successful Rug Dealer, brought you to his Rug Den and gave you a bag of ${pity}, and asked you to be his Rug Distributor. Just sell it before someone sees you, the next batch will be ready after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.rugdealer(pity));
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
                             tmp = await user.addItem(item)
@@ -325,7 +325,7 @@ module.exports = {
                                 claim_stamp: stamp.valueOf(),
                                 worker_id: "Haxor",
                             });
-                            obj = codeBlock(`While browsing OnlyCorns your screen freezes and a pop-up saying you were mailed a free ${pity} appears! Must be that Haxor you hired to help you win Call of Booty. They may give you something again after [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                            obj = codeBlock(aceslib.workerMessages.haxor(pity));
                             msg.push(obj);
                             item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
                             tmp = await user.addItem(item)
@@ -353,13 +353,13 @@ module.exports = {
                     }
                 }
             } else {
-                await interaction.editReply({content: msg.join("\n")});
+                await interaction.followUp({content: msg.join("\n")});
+                de = new Date();
+                stamp = addMinutes(de, 60);
+                await interaction.followUp(`Your workers will be ready again at [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
             }
             Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
-            
-            fs.writeFile("/home/cluster3/projects/Oracle-Bot/.tmp/claimLog.txt", `${log.join("\n")}`, e => console.log(e));
-            
-            interaction.client.guilds.cache.get('792894937196134421').channels.cache.get('1054834188064411669').send({message: `Claim Log\n\`\`\`diff\n- AcesLib\n\`\`\``, files: ["/home/cluster3/projects/Oracle-Bot/.tmp/claimLog.txt"] })
+
             console.log("Done")
             return { message: 'E' }
         }
