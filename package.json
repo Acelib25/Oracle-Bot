@@ -9,9 +9,9 @@
     "sqlite3": "^5.0.11"
   },
   "name": "oracle-bot",
-  "version": "2.1.5",
-  "versionName": "Some nice updates!",
-  "description": "I say more",
+  "version": "2.2.0",
+  "versionName": "Item and Worker Transfering!",
+  "description": "Ace can now give free items and workers and users can now send items, workers, and Entropy to each other.",
   "main": "oracle.js",
   "devDependencies": {
     "eslint": "^8.22.0"
