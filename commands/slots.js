@@ -3,7 +3,7 @@ const { SlashCommandBuilder, AttachmentBuilder, ContextMenuCommandBuilder, Appli
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
 const Canvas = require('@napi-rs/canvas');
 const { Discord } = require('discord.js');
-const axios = require('axios');
+const { Storage } = require('../dbObjects.js');
 const fs = require('node:fs');
 const wait = require('node:timers/promises').setTimeout;
 const aceslib = require('../../aceslib');
@@ -12,11 +12,26 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('slots')
 		.setDescription('Roll the dice!')
-        .addNumberOption(option => option.setName('bet').setDescription('How much will you bet?').setRequired(true).setMinValue(0.25)),
+        .addNumberOption(option => option.setName('bet').setDescription('How much will you bet?').setRequired(true).setMinValue(5)),
 	async execute(interaction, currency) {
-
         await interaction.reply("Loading");
         const bet = interaction.options.getNumber('bet');
+
+        let pot = await Storage.findOne({ where: { guild_id: interaction.guild.id, value1key: "SlotsPot"}});
+        if (pot == null){
+            let tmp = Storage.create({
+                guild_id: interaction.guild.id,
+                value1key: 'SlotsPot',
+                value1: "50"
+            });
+            pot = await Storage.findOne({ where: { guild_id: interaction.guild.id, value1key: "SlotsPot"}});
+            currentWorth = 50;
+            
+        } else {
+            currentWorth = parseFloat(pot.value1);
+        }
+
+        
 
         function isNumeric(num){
 			return !isNaN(num)
@@ -96,7 +111,7 @@ module.exports = {
             if(slot2bottom > 5 ){slot2bottom = 0}
             if(slot3bottom > 5 ){slot3bottom = 0}
 
-            await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nYou bet ${bet} ⵇ and you${stat}`)
+            await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nCurrent Pot: ${currentWorth} ⵇ\n\nYou bet ${bet} ⵇ and you${stat}`)
 
             await wait(250);
 
@@ -106,8 +121,9 @@ module.exports = {
             stat = `\n\n DEBUG:\n Start: ${preset}\n End: Slots: ${slot1} ${slot2} ${slot3}`;
         }
         else if(slot1 == slot2 && slot2 == slot3){  
-            stat = ` Win! Your bet was doubled!\nYou gained ${bet*2} ⵇ`
-            currency.add(interaction.member.user.id, bet*2);
+            stat = ` Win!\nYou gained ${currentWorth + bet} ⵇ`
+            currency.add(interaction.member.user.id, currentWorth + bet);
+            pot.update({ value1: "50" })
         } 
         else if(slot1 == slot2 || slot2 == slot3){
             stat = ` Got 2 in a row! I'll let you keep your money.\nYou lost 0 ⵇ`
@@ -115,14 +131,16 @@ module.exports = {
         else if(slot1 == slot2 || slot2 == slot3 || slot1 == slot3){
             stat = ` Got 2 out of 3! I'll go halfsies with ya. :stuck_out_tongue_winking_eye:\nYou lost ${bet/2} ⵇ`
             currency.add(interaction.member.user.id, -bet/2);
+            pot.update({ value1: `${currentWorth + bet/2}` })
         }
         else {
             stat = ` Lose! Bye bye money. :(\nYou lost ${bet} ⵇ`
             currency.add(interaction.member.user.id, -bet);
+            pot.update({ value1: `${currentWorth + bet}` })
         }
         await wait(250);
         aceslib.msg(interaction.client, `Start: ${preset}\n End: Slots: ${slot1} ${slot2} ${slot3}`)
-        await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nYou bet ${bet} ⵇ and you${stat}`)
+        await interaction.editReply(`╔════[SLOTS]════╗\n║   ${rolls[slot1top]}  ║  ${rolls[slot2top]}  ║  ${rolls[slot3top]}     ║\n>> ${rolls[slot1]}   ║  ${rolls[slot2]}  ║  ${rolls[slot3]}  <<\n║   ${rolls[slot1bottom]}  ║  ${rolls[slot2bottom]}  ║  ${rolls[slot3bottom]}     ║\n╚════[SLOTS]════╝\n\nCurrent Pot: ${currentWorth} ⵇ\n\nYou bet ${bet} ⵇ and you${stat}`)
 		
         return { message: await interaction.fetchReply() }
 	},

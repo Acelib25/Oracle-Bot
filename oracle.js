@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { token } = require('./.config.json');
 const Sequelize = require('sequelize');
-const { Users, CurrencyShop } = require('./dbObjects.js');
+const { Users, CurrencyShop, Storage } = require('./dbObjects.js');
 
 
 const sequelize = new Sequelize('database', 'user', 'password', {
@@ -84,6 +84,25 @@ client.on('interactionCreate', async interaction => {
 
 		if (!command) return;
 
+		let handsOffentry = await Storage.findOne({ where: { guild_id: interaction.guild.id, value1key: "HandsOff"}});
+        if (handsOffentry == null){
+            let tmp = Storage.create({
+                guild_id: interaction.guild.id,
+                value1key: 'HandsOff',
+                value1: "false"
+            });
+            handsOffentry = await Storage.findOne({ where: { guild_id: interaction.guild.id, value1key: "SlotsPot"}});
+            handsOff = "false"
+            
+        } else {
+            handsOff = handsOffentry.value1;
+        }
+
+		if(interaction.member.user.id != '1054787604622606406' && interaction.member.user.id != '344143763918159884' && handsOff == "true") {
+			await interaction.reply(`Hands Off has been engaged. This means Ace wants you to stop running commands.\nUsusaly this is so he does not break your workers or backpack. Please try your command again later.`); 
+			return { message: "Hands Off" }
+		}
+
 		//Set name
 		let speakers_name = interaction.member.nickname;
 		if (speakers_name == null) {
@@ -91,7 +110,7 @@ client.on('interactionCreate', async interaction => {
 		}
 
         const commandObj = await command.execute(interaction, currency);
-		currency.add(interaction.member.user.id, 0.10)
+		currency.add(interaction.member.user.id, 0.01)
 
 		try {
 			

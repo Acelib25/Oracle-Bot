@@ -13,6 +13,7 @@ const UserItems = require('./models/UserItems.js')(sequelize, Sequelize.DataType
 const UserWorkers = require('./models/UserWorkers.js')(sequelize, Sequelize.DataTypes);
 const Workers = require('./models/Workers.js')(sequelize, Sequelize.DataTypes);
 const WorkerShop = require('./models/WorkerShop.js')(sequelize, Sequelize.DataTypes);
+const Storage = require('./models/Storage') (sequelize, Sequelize.DataTypes)
 const aceslib = require('../aceslib');
 
 UserItems.belongsTo(CurrencyShop, { foreignKey: 'item_id', as: 'item' });
@@ -49,7 +50,7 @@ Users.prototype.addWorker = async function(worker) {
 		where: { user_id: this.user_id, item_id: worker.id },
 	});
 
-	if (userWorker) {
+	if (userWorker != null) {
 		userWorker.amount += 1;
 		return userWorker.save();
 	}
@@ -86,6 +87,19 @@ Users.prototype.removeWorker = async function(worker) {
 	}
 };
 
+Users.prototype.undeployWorker = async function(worker) {
+	const Worker = await Workers.findOne({
+		where: { user_id: this.user_id, worker_id: worker.name },
+	});
+
+	if (Worker != null) {
+		console.log(Worker);
+		console.log(Worker.id);
+		Worker.destroy({ where: { id: Worker.id } })
+		return Worker.save();
+	}
+};
+
 /* eslint-disable-next-line func-names */
 Users.prototype.getItems = function() {
 	return UserItems.findAll({
@@ -102,4 +116,6 @@ Users.prototype.getWorkers = function() {
 };
 
 
-module.exports = { Users, CurrencyShop, UserItems, WorkerShop, Workers };
+
+
+module.exports = { Users, CurrencyShop, UserItems, WorkerShop, Workers, Storage };
