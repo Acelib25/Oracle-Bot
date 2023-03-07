@@ -76,11 +76,17 @@ module.exports = {
             if (item.cost > currency.getBalance(interaction.member.user.id).toFixed(2)) {
                 return interaction.reply(`You currently have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ, but the ${item.name} costs ${item.cost} ⵇ!`);
             }
-            const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
-            await user.addWorker(item);
+            let d = new Date();
+            let stamp = addMinutes(d, 60);
+            let wrk = await Workers.create({
+                user_id: interaction.member.user.id,
+                claim_stamp: stamp.valueOf(),
+                worker_id: item.name,
+            }); 
+                
+            console.log(stamp);
             currency.add(interaction.member.user.id, item.cost * -1);
-
-            await interaction.reply(`You've bought: ${item.name}.`);
+            await interaction.reply(`You bought and deployed ${itemName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].`)
             return { message: await interaction.fetchReply() }
         }
         
@@ -117,16 +123,41 @@ module.exports = {
         
         }
 
-        else if (interaction.options.getSubcommand() === 'retrieve') {
-            await interaction.reply("Ya, this has not been added yet. If you really want to remove your sla-I mean worker, talk to Ace.")
+        else if (interaction.options.getSubcommand() === 'retrieve') {        
+            const workerName = interaction.options.getString('worker');
+            const worker = await WorkerShop.findOne({ where: { name: { [Op.like]: workerName } } });
+		
+            const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
+            
+            if (worker != null){
+                await user.undeployWorker(worker);
+                                
+                await interaction.reply(`You recaptured ${workerName}, they have been stuffed back into your backpack for safe keeping. :)`)
+                
+                await user.addWorker(worker);
+            } else {
+                await interaction.reply(`You don't have ${workerName} deployed.`)
+            }
+                return { message: await interaction.fetchReply() }
         }
 
         else if (interaction.options.getSubcommand() === 'claim') {
             await interaction.reply({content: "You got a lot, this might take a moment...\n"});
             const deployed = await Workers.findAll({ where: { user_id: interaction.member.user.id } });
 
-            const stamp = deployed.map(i => i.claim_stamp);
-            const workerID = deployed.map(i => `${i.worker_id}`);
+            const stamp = deployed.map(i => {
+                let d = new Date().valueOf();
+                if (i.claim_stamp <= d){
+                    return i.claim_stamp
+                }
+            });
+            const workerID = deployed.map(i => {
+                let d = new Date().valueOf();
+                if (i.claim_stamp <= d){
+                    return i.worker_id
+                }
+            });
+
 
             console.log(stamp)
             console.log(workerID)
@@ -140,6 +171,9 @@ module.exports = {
             let msg = ['Here are your results:'];
             let index = -1;
             const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
+            let bye = await Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
+
+            console.log(`; ${bye}`)
 
             for(element in stamp){
                 let pity = 0;
@@ -154,10 +188,10 @@ module.exports = {
                         case 'Beggar':
                             pity = 0;
                             opt = [
-                                {item: 0, weight: 2000 }, 
-                                {item: 0.1, weight: 300 }, 
-                                {item: 0.5, weight: 300 }, 
-                                {item: 0.75, weight: 100 }, 
+                                {item: 0, weight: 1000 }, 
+                                {item: 0.1, weight: 400 }, 
+                                {item: 0.5, weight: 400 }, 
+                                {item: 0.75, weight: 200 }, 
                                 {item: 1, weight: 100 },
                                 {item: 5, weight: 50 },
                                 {item: 10, weight: 5 }
@@ -203,10 +237,10 @@ module.exports = {
                         case 'Teacher':
                             pity = "Nothin";
                             opt = [
-                                {item: "Ruler", weight: 30 }, 
-                                {item: "Apple", weight: 50 }, 
-                                {item: "B+ paper", weight: 15 },
-                                {item: "A+ paper", weight: 5 }
+                                {item: "Ruler", weight: 10 }, 
+                                {item: "Apple", weight: 20 }, 
+                                {item: "B+ paper", weight: 25 },
+                                {item: "A+ paper", weight: 15 }
                             ]
                             pity = weighted_random(opt);
                             de = new Date();
@@ -352,13 +386,15 @@ module.exports = {
                         interaction.followUp({content: i});
                     }
                 }
+                let de2 = new Date();
+                let stamp2 = addMinutes(de2, 60);
+                await interaction.followUp(`Your workers will be ready again at [${stamp2.toDateString()}] at [${stamp2.toTimeString()}]`);
             } else {
                 await interaction.followUp({content: msg.join("\n")});
-                de = new Date();
-                stamp = addMinutes(de, 60);
-                await interaction.followUp(`Your workers will be ready again at [${stamp.toDateString()}] at [${stamp.toTimeString()}]`);
+                let de2 = new Date();
+                let stamp2 = addMinutes(de2, 60);
+                await interaction.followUp(`Your workers will be ready again at [${stamp2.toDateString()}] at [${stamp2.toTimeString()}]`);
             }
-            Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
 
             console.log("Done")
             return { message: 'E' }

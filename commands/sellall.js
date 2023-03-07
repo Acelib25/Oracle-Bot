@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const { SlashCommandBuilder, codeBlock } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
-const { Users, CurrencyShop, Workers, WorkerShop } = require('../dbObjects.js');
+const { Users, CurrencyShop, Workers, WorkerShop, UserWorkers } = require('../dbObjects.js');
 const { Op } = require('sequelize');
 
 module.exports = {
@@ -35,11 +35,13 @@ module.exports = {
 			else if (item.name == "Gas Lantern") {}
 			else if (item.name == "Egg Borgur" && interaction.member.user.id == 718599764173914193) {}
 			else if (item.name == "Fate's Brain") {}
+			else if (item.name == "Gun") {}
+			else if (item.name == "null") {}
 			else {
 				for (let j=0; j < numberHad[k]; j++){
 					await user.removeItem(item);
 					await currency.add(interaction.member.user.id, (item.cost*0.85).toFixed(2));
-					sum += (item.cost*0.85).toFixed(2)
+					sum += 1*(item.cost*0.85).toFixed(2)
 			}
 				await interaction.editReply(`Earnings!\n\n ${sum} ⵇ`)
 			}			
