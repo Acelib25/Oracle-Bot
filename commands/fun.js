@@ -432,7 +432,7 @@ module.exports = {
             const background = await Canvas.loadImage(image)
             .catch(error => {
             writelog(error);
-            interaction.editReply("Oops `Error: 403`, tell Ace to fix this. Try again.");
+            channel.send("Oops `Error: 403`, tell Ace to fix this. Try again.");
             })
 
             const row = new ActionRowBuilder()
@@ -465,20 +465,20 @@ module.exports = {
             const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'bonk.png' });
             
             if(reason && pingpong){
-                interaction.editReply({ content: `<@${user.id}> has been bonked because ${reason}!!!!`, files: [attachment], components: [row] })
+                channel.send({ content: `<@${user.id}> has been bonked because ${reason}!!!!`, files: [attachment], components: [row] })
             } 
             else if (reason && !pingpong){
-                interaction.editReply({ content: `${user.username} has been bonked because ${reason}!!!!`, files: [attachment], components: [row] })
+                channel.send({ content: `${user.username} has been bonked because ${reason}!!!!`, files: [attachment], components: [row] })
             } 
             else if (pingpong){
-                interaction.editReply({ content: `<@${user.id}> has been bonked!!!!`, files: [attachment], components: [row] })
+                channel.send({ content: `<@${user.id}> has been bonked!!!!`, files: [attachment], components: [row] })
             } 
             else {
-                interaction.editReply({ content: `${user.username} has been bonked!!!!`, files: [attachment], components: [row] })
+                channel.send({ content: `${user.username} has been bonked!!!!`, files: [attachment], components: [row] })
             }
 
             await wait(1000)
-            return { message: await interaction.fetchReply(), args: { target: user, reason: reason, ping: pingpong } }
+            return { message: await "URL", args: { target: user, reason: reason, ping: pingpong } }
         }
 
         else if (interaction.options.getSubcommand() === 'bigthink'){
