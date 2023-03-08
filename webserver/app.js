@@ -161,14 +161,26 @@ client.once('ready', async () => {
 
     app.post('/interact/:command', async (req, res, next) => {
         console.log(req.body);
+
+        if (req.body.subcommand) {
+            console.log("Attempting to execute command: '" + req.params.command + "', subcommand: '" + req.body.subcommand + "'");
+        } else {
+            console.log("Attempting to execute command: '" + req.params.command + "'");
+        }
             
         const commandObj = client.commands.get(req.params.command);
         const guildObj = client.guilds.cache.get('1049700882335400047');
         const channelObj = guildObj.channels.cache.get(req.body.channel_id);
 
         try{
-            await commandObj.url(req.body.subcommand, guildObj, channelObj, currency, req.body);
-            res.redirect('/');
+            if (req.body.subcommand) {
+                await commandObj.url(req.body.subcommand, guildObj, channelObj, currency, req.body);
+                res.redirect('/');
+            } else {
+                await commandObj.url(guildObj, channelObj, currency, req.body);
+                res.redirect('/');
+            }
+            
         } catch(err) {
             console.log(err);
             res.redirect('/');
