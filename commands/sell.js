@@ -95,6 +95,7 @@ module.exports = {
 			}
 			else if (item.name == "Egg Borgur" && interaction.member.user.id == 718599764173914193) {interaction.reply(`You love Egg Borgur too much to sell it.`); return { message: await interaction.fetchReply() };}
 			else if (item.name == "Fate's Brain") {interaction.reply(`Look, you worked super hard to get this, someone would have to fight you for it.`); return { message: await interaction.fetchReply() };}
+			else if (item.name == "Greg") {interaction.reply(`Greg >:(`); return { message: await interaction.fetchReply() };}
 		
 			
 			currency.add(interaction.member.user.id, amount*(item.cost*0.85).toFixed(2));

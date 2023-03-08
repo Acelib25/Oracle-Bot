@@ -29,6 +29,7 @@ module.exports = {
 			return { message: await interaction.fetchReply()};
 		}
 		else if (item.name == "Fate's Brain") {interaction.reply(`You gotta fight Ace for it.`); return { message: await interaction.fetchReply() };}
+		else if (item.name == "Greg") {interaction.reply(`Greg :)`); return { message: await interaction.fetchReply() };}
 		
 			
 		

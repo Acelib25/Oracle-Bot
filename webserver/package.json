@@ -1,0 +1,22 @@
+{
+  "name": "oracle-web-supplement",
+  "version": "0.1.0",
+  "description": "Webserver to supplement the Oracle Discord bot",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon app"
+  },
+  "author": "Acelib25",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "discord.js": "^14.7.1",
+    "express": "^4.18.2",
+    "express-subdomain": "^1.0.5",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "nodemon": "^2.0.21",
+    "sequelize": "^6.29.1",
+    "sqlite3": "^5.1.4"
+  }
+}

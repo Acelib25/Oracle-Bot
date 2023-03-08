@@ -73,6 +73,9 @@ module.exports = {
 
             if (!item) return interaction.reply(`That worker doesn't exist.`);
             
+            if (item.name == "Hacker GF") {interaction.reply(`Good luck, she is hidden behind 6 proxies, 3 VPNs, a false alias, and like 30 or so giant stuffed animals.`); return { message: await interaction.fetchReply() };}
+        
+
             if (item.cost > currency.getBalance(interaction.member.user.id).toFixed(2)) {
                 return interaction.reply(`You currently have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ, but the ${item.name} costs ${item.cost} ⵇ!`);
             }
@@ -102,8 +105,9 @@ module.exports = {
 
             console.log(workersHad)
             console.log(numberHad)
-            
-            if (workersHad.includes(`${worker.name}`) && numberHad[workersHad.indexOf(worker.name)] > 0){
+
+            let blacklist = ["Hacker GF"];
+            if (workersHad.includes(`${worker.name}`) && numberHad[workersHad.indexOf(worker.name)] > 0 && !blacklist.includes(worker.name)){
                 let d = new Date();
                 let stamp = addMinutes(d, 60);
                 let wrk = await Workers.create({
@@ -117,7 +121,7 @@ module.exports = {
                 await interaction.reply(`You deployed ${workerName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].`)
                 await user.removeWorker(worker);
             } else {
-                await interaction.reply(`You don't have ${workerName}.`)
+                await interaction.reply(`You don't have ${workerName} or they could not be deployed.`)
             }
                 return { message: await interaction.fetchReply() }
         

@@ -37,6 +37,7 @@ module.exports = {
 			else if (item.name == "Fate's Brain") {}
 			else if (item.name == "Gun") {}
 			else if (item.name == "null") {}
+			else if (item.name == "Greg") {}
 			else {
 				for (let j=0; j < numberHad[k]; j++){
 					await user.removeItem(item);

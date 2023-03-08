@@ -91,7 +91,7 @@ client.on('interactionCreate', async interaction => {
                 value1key: 'HandsOff',
                 value1: "false"
             });
-            handsOffentry = await Storage.findOne({ where: { guild_id: interaction.guild.id, value1key: "SlotsPot"}});
+            handsOffentry = await Storage.findOne({ where: { guild_id: interaction.guild.id, value1key: "HandsOff"}});
             handsOff = "false"
             
         } else {
@@ -227,3 +227,7 @@ client.on('interactionCreate', async interaction => {
 
 // Login to Discord with your client's token
 client.login(token);
+
+module.exports = {
+	currency: currency,
+}

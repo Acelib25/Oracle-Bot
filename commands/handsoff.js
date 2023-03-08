@@ -15,7 +15,7 @@ module.exports = {
 	async execute(interaction, currency) {
 		const val = interaction.options.getString('val');
 		
-		if(interaction.member.user.id != '1054787604622606406' && interaction.member.user.id != '344143763918159884') {
+		if(interaction.member.user.id != '1054787604622606406' && interaction.member.user.id != '344143763918159884' && interaction.member.user.id != '558458639845818368') {
             await interaction.reply(`Ace Only!`); 
             return { message: "none" }
         }
