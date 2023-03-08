@@ -98,7 +98,7 @@ client.on('interactionCreate', async interaction => {
             handsOff = handsOffentry.value1;
         }
 
-		if(interaction.member.user.id != '1054787604622606406' && interaction.member.user.id != '344143763918159884' && handsOff == "true") {
+		if(interaction.member.user.id != '1054787604622606406' && interaction.member.user.id != '344143763918159884' && interaction.member.user.id != '558458639845818368' && handsOff == "true") {
 			await interaction.reply(`Hands Off has been engaged. This means Ace wants you to stop running commands.\nUsusaly this is so he does not break your workers or backpack. Please try your command again later.`); 
 			return { message: "Hands Off" }
 		}

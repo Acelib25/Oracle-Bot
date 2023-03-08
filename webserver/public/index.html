@@ -1,12 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Oracle Bot Connector</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle Web Companion</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #05d744;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        button{
+            background-color: #000;
+            border: 3px solid #05d744;
+            color: #05d744;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        button:hover{
+            background-color: #05d744;
+            color: #000;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #05d744;
+            padding: 20px;
+            background-color: #05d74450;
+        }
+        input{
+            background-color: #000;
+            border: 3px solid #05d744;
+            color: #05d744;
+            padding: 10px 20px;
+            font-size: 20px;
+            width: 315px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        input:focus{
+            background-color: #05d74425;
+            color: #05d744;
+        }
+
+    </style>
 </head>
 <body>
-    <form action="/send" method="get">
-        <input type="text" name="message" placeholder="Enter your message" />
-        <input type="submit" value="Send" />
+    <h1>Welcome to Oracle (demo)</h1>
+    <form action="/send" method="post">
+        <input type="text" name="message" placeholder="Type a message." required><br>
+        <input type="number" name="channel_id" placeholder="Enter channel ID"><br>
+        <button type="submit">Send message</button>
     </form>
+    <br>
+    <button onclick="window.location.href='/interact/top?guild=1049700882335400047&channel=1082842699272552509'">Send a leaderboard to #ws-test</button>
 </body>
 </html>

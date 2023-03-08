@@ -7,8 +7,9 @@ const { token } = require('../.config.json');
 const express = require('express');
 const app = express();
 const port = 3000;
+const bodyParser = require('body-parser');
+let currency;
 let testChannel;
-
 
 /*
 let tmp = Storage.create({
@@ -38,7 +39,7 @@ const client = new Client(
     },
 );
 
-const currency = new Collection();
+currency = new Collection();
 
 Reflect.defineProperty(currency, 'add', {
 	value: async (id, amount) => {
@@ -63,53 +64,8 @@ Reflect.defineProperty(currency, 'getBalance', {
 	},
 });
 
-app.get('/', express.static(path.join(__dirname, 'public')));
-
-app.get('/send', (req, res) => {
-    let arrs = req.query.message.split(",");
-    for (let i = 0; i < arrs.length; i++) {
-        testChannel.send(arrs[i]);
-    }
-    if (arrs.length > 1) {
-        res.send("Messages Sent");
-    } else {
-        res.send("Message Sent");
-    }
-    console.log(req.query);
-});
-
-app.get('/:command', async (req, res) => {
-    const commandObj = client.commands.get(req.params.command);
-    const guildObj = client.guilds.cache.get(req.query.guild);
-    const channelObj = guildObj.channels.cache.get(req.query.channel);
-    
-    try{
-        await commandObj.url(guildObj, channelObj, currency);
-        res.send("Success!")
-    } catch(err) {
-        console.log(err);
-        res.send("Error");
-    }
-});
-app.get('/:command/:subcommand', async (req, res) => {
-
-    console.log(req.query);
-    const commandObj = client.commands.get(req.params.command);
-    const guildObj = client.guilds.cache.get(req.query.guild);
-    const channelObj = guildObj.channels.cache.get(req.query.channel);
-    
-    try{
-        await commandObj.url(req.query.subcommand, guildObj, channelObj, currency, req.query);
-        res.send("Success!")
-    } catch(err) {
-        console.log(err);
-        res.send("Error");
-    }
-});
-
 client.once('ready', async () => {
 	console.log('Webserver Connector Ready!');
-    testChannel = client.guilds.cache.get('1049700882335400047').channels.cache.get('1082842699272552509');
     
     const storedBalances = await Users.findAll();
 	storedBalances.forEach(b => currency.set(b.user_id, b));
@@ -130,8 +86,77 @@ client.once('ready', async () => {
         catch(err){
         }
     }
+
+    client.user.setActivity({ type: ActivityType.Watching, name: 'Anden fuck up the webserver' });
+    console.log(`Logged in as ${client.user.tag}!`);
+
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.get('/', express.static(path.join(__dirname + '/public')));
+    app.post('/send', (req, res) => {
+        console.log(req.body);
+        console.log("Got message as: " + typeof req.body.message);
+        if (req.body.channel_id) {
+            testChannel = client.guilds.cache.get('1049700882335400047').channels.cache.get(req.body.channel_id);
+        } else {
+            testChannel = client.guilds.cache.get('1049700882335400047').channels.cache.get('1082842699272552509');
+        }
+        if (typeof req.body.message === 'object') {
+            for (let i = 0; i < req.body.message.length; i++) {
+                if (req.body.message[i].includes(",,")){
+                    console.log("Splitting and sending message (", i, ")");
+                    let arrs = req.body.message[i].split(",,");
+                    for (let j = 0; j < arrs.length; j++) {
+                        testChannel.send(arrs[j]);
+                    }
+                    res.redirect('/');
+                } else {
+                    console.log("Sending message (", i, ")");
+                    testChannel.send(req.body.message[i]);
+                    res.redirect('/');
+                }
+            }
+        } else {
+            if (req.body.message.includes(",,")){
+                console.log("Splitting and sending message");
+                let arrs = req.body.message.split(",,");
+                for (let j = 0; j < arrs.length; j++) {
+                    testChannel.send(arrs[j]);
+                }
+                res.redirect('/');
+            } else {
+                console.log("Sending message");
+                testChannel.send(req.body.message);
+                res.redirect('/');
+            }
+        }
+    });
+    app.get('/interact/:command', async (req, res, next) => {
+        console.log("Page requested: /" + req.params.command);
+        if (req.query.subcommand) {
+            console.log("Attempting to execute command: '" + req.params.command + "', subcommand: '" + req.query.subcommand + "'");
+        } else {
+            console.log("Attempting to execute command: '" + req.params.command + "'");
+        }
+    
+        const commandObj = client.commands.get(req.params.command);
+        const guildObj = client.guilds.cache.get(req.query.guild);
+        const channelObj = guildObj.channels.cache.get(req.query.channel);
+        
+        try{
+            if (req.query.subcommand) {
+                await commandObj.url(req.query.subcommand, guildObj, channelObj, currency);
+            } else {
+                await commandObj.url(guildObj, channelObj, currency);
+            }
+            res.send("Success!");
+        } catch(err) {
+            console.log(err);
+            res.send("Error!\n", err);
+        }
+    });
+
     app.listen(port, () => console.log(`Web app started: app listening on port ${port}!`));
 });
 
 client.login(token);
-
