@@ -320,7 +320,7 @@ module.exports = {
                 },
                 fields: [
                     { name: 'Bot Name', value: `${interaction.client.user.username}`, inline: true},
-                    { name: 'Creator', value: "Acelib25#2173", inline: true},
+                    { name: 'Creator', value: "Acelib25#2173 & yourlocaltechboi#0001", inline: true},
                     { name: 'Version', value: `${packageInfo.version}`, inline: true},
                     { name: 'Version Name', value: `${packageInfo.versionName}`, inline: true},
                     { name: 'DJS Version', value: "v14 (Latest)", inline: true},
