@@ -159,15 +159,15 @@ client.once('ready', async () => {
     });
 
 
-    app.post('/bonk', async (req, res, next) => {
+    app.post('/interact/:command', async (req, res, next) => {
         console.log(req.body);
             
-        const commandObj = client.commands.get('fun');
+        const commandObj = client.commands.get(req.params.command);
         const guildObj = client.guilds.cache.get('1049700882335400047');
         const channelObj = guildObj.channels.cache.get(req.body.channel_id);
-        
+
         try{
-            await commandObj.url('bonk', guildObj, channelObj, currency, req.body);
+            await commandObj.url(req.body.subcommand, guildObj, channelObj, currency, req.body);
             res.redirect('/');
         } catch(err) {
             console.log(err);
