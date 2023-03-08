@@ -68,5 +68,18 @@
     </form>
     <br>
     <button onclick="window.location.href='/interact/top?guild=1049700882335400047&channel=1082842699272552509'">Send a leaderboard to #ws-test</button>
+    <br>
+    <br>
+    <form action="/bonk" method="post">
+        <input type="number" name="target" placeholder="Type a User ID" required><br>
+        <input type="text" name="reason" placeholder="because..." required><br>
+        <input type="radio" name="ping" value="true" required><label for="ping">Ping=TRUE</label><br>
+        <input type="radio" name="ping" value="false" required><label for="ping">Ping=FALSE</label><br>
+        <input type="number" name="channel_id" placeholder="Enter channel ID"><br>
+        <button type="submit">Bonk User</button>
+    </form>
+    <br>
+    <br>
+    <button onclick="window.location.href='/interact/fun?subcommand=bonk&guild=1049700882335400047&channel=1082842699272552509&target=1010227827481784411&reason=&ping=true'">Bonk Oracle in #ws-test</button>
 </body>
 </html>

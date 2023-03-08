@@ -6,6 +6,7 @@ const path = require('node:path');
 const wait = require('node:timers/promises').setTimeout;
 const packageInfo = require('../package.json');
 const aceslib = require('../../aceslib');
+const { error } = require('node:console');
 let wack_id = [];
 let wack_bonks = [];
 let blacklist = [];
@@ -414,20 +415,37 @@ module.exports = {
 	},
     async url(subcommand, guild, channel, currency, args) {
 		
+        function bool(string){
+            let truthy = ["true", "True", "1"];
+            let falsey = ["false", "False", "0"];
+
+            if (truthy.includes(string)){
+                return true;
+            }
+            else if (falsey.includes(string)){
+                return false;
+            }
+            else {
+                return new Error;
+            }
+        }
+        
         
         if (subcommand === 'bonk') {
             let image = "https://i.imgur.com/QFcD0kw.png"
             const canvas = Canvas.createCanvas(720, 492);
             const ctx = canvas.getContext('2d');
-            let user = args.target
-            let reason = args.reason
-            let pingpong = args.ping
+            let user = guild.members.cache.get(args.target).user ?? guild.members.cache.get('1010227827481784411').user;
+            let reason = `${args.reason}`
+            let pingpong = bool(args.ping)
+
+            
 
             console.log(user)
             console.log(reason)
-            console.log(ping)
+            console.log(pingpong)
             
-            channel.reply("Loading");
+            channel.send("Loading");
 
             const background = await Canvas.loadImage(image)
             .catch(error => {
@@ -481,14 +499,14 @@ module.exports = {
             return { message: await "URL", args: { target: user, reason: reason, ping: pingpong } }
         }
 
-        else if (interaction.options.getSubcommand() === 'bigthink'){
+        else if (subcommand === 'bigthink'){
             
             function choose(choices) {
                 var index = Math.floor(Math.random() * choices.length);
                 return choices[index];
             }
             
-            let name = interaction.member.user.username;
+            let name = args.init.username;
 
             if (interaction.member.nickname){
                 name = interaction.member.nickname;

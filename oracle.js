@@ -180,12 +180,20 @@ client.on('interactionCreate', async interaction => {
 	else if(interaction.isButton()){
 		const button = interaction;
 		console.log(button)
-		let cmd_name = button.message.interaction.commandName;
-		console.log(cmd_name);
+		let cmd_name = "fuck";
+		if (button.message.interaction == null){
+			if (button.customId == "re-bonk"){
+				cmd_name = "fun"
+			}
+		} else {
+			cmd_name = button.message.interaction.commandName;
+			console.log(cmd_name);
 
-		if (cmd_name == "fun bonk"){
-			cmd_name = "fun"
+			if (cmd_name == "fun bonk"){
+				cmd_name = "fun"
+			}
 		}
+		
 
 		const command = button.client.commands.get(cmd_name);
 

@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 let currency;
 let testChannel;
 
+
 /*
 let tmp = Storage.create({
     guild_id: interaction.guild.id,
@@ -132,6 +133,7 @@ client.once('ready', async () => {
         }
     });
     app.get('/interact/:command', async (req, res, next) => {
+        console.log(req.body);
         console.log("Page requested: /" + req.params.command);
         if (req.query.subcommand) {
             console.log("Attempting to execute command: '" + req.params.command + "', subcommand: '" + req.query.subcommand + "'");
@@ -145,14 +147,31 @@ client.once('ready', async () => {
         
         try{
             if (req.query.subcommand) {
-                await commandObj.url(req.query.subcommand, guildObj, channelObj, currency);
+                await commandObj.url(req.query.subcommand, guildObj, channelObj, currency, req.query);
             } else {
-                await commandObj.url(guildObj, channelObj, currency);
+                await commandObj.url(guildObj, channelObj, currency, req.query);
             }
             res.send("Success!");
         } catch(err) {
             console.log(err);
             res.send("Error!\n", err);
+        }
+    });
+
+
+    app.post('/bonk', async (req, res, next) => {
+        console.log(req.body);
+            
+        const commandObj = client.commands.get('fun');
+        const guildObj = client.guilds.cache.get('1049700882335400047');
+        const channelObj = guildObj.channels.cache.get(req.body.channel_id);
+        
+        try{
+            await commandObj.url('bonk', guildObj, channelObj, currency, req.body);
+            res.redirect('/');
+        } catch(err) {
+            console.log(err);
+            res.redirect('/');
         }
     });
 
