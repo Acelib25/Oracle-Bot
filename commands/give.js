@@ -44,6 +44,29 @@ module.exports = {
 		await interaction.reply(`You gave: ${amount} ${item.name} to ${target.username}.`);
 		return { message: await interaction.fetchReply() }
 		},
+	async url(guild, channel, currency, args) {
+		const itemName = args.item;
+		const item = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemName } } });
+		const target = guild.members.cache.get(args.target).user;
+		let amount = args.amount;
+		
+		if (amount < 0) {
+			const user = await Users.findOne({ where: { user_id: target.id } });
+			for (k=1; k <= -amount; k++){
+				await user.removeItem(item);
+			}
+		}
+		else {
+			const user = await Users.findOne({ where: { user_id: target.id } });
+			for (k=1; k <= amount; k++){
+				await user.addItem(item);
+			}
+		}
+		
+		
+
+		await channel.send(`You gave: ${amount} ${item.name} to ${target.username}.`);
+		},
 	async args(interaction) {
 		return { none: "None",}
 	},

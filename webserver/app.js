@@ -1,7 +1,6 @@
 const { Client, Collection, GatewayIntentBits, ActivityType, CommandInteractionOptionResolver } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
-const Sequelize = require('sequelize');
 const { Users, CurrencyShop, Storage } = require('../dbObjects.js');
 const { token } = require('../.config.json');
 const express = require('express');
@@ -24,14 +23,6 @@ handsOff = handsOffentry.value1;
 
 handsOffentry.save()
 */
-
-const sequelize = new Sequelize('database', 'user', 'password', {
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-	// SQLite only
-	storage: 'database.sqlite',
-});
 
 const client = new Client(
     {
@@ -159,18 +150,25 @@ client.once('ready', async () => {
     });
 
 
+    // See args.txt for what wants what.
     app.post('/interact/:command', async (req, res, next) => {
         console.log(req.body);
+        
+        let testChannel = client.guilds.cache.get('1049700882335400047').channels.cache.get('1082842699272552509');
 
         if (req.body.subcommand) {
             console.log("Attempting to execute command: '" + req.params.command + "', subcommand: '" + req.body.subcommand + "'");
         } else {
             console.log("Attempting to execute command: '" + req.params.command + "'");
+        }  
+        if (req.body.channel_id) {
+            testChannel = client.guilds.cache.get('1049700882335400047').channels.cache.get(req.body.channel_id);
+        } else {
+            testChannel = client.guilds.cache.get('1049700882335400047').channels.cache.get('1082842699272552509');
         }
-            
         const commandObj = client.commands.get(req.params.command);
         const guildObj = client.guilds.cache.get('1049700882335400047');
-        const channelObj = guildObj.channels.cache.get(req.body.channel_id);
+        const channelObj = testChannel;
 
         try{
             if (req.body.subcommand) {

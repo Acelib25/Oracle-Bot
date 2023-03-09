@@ -506,10 +506,12 @@ module.exports = {
                 return choices[index];
             }
             
-            let name = args.init.username;
+            let member = guild.members.cache.get(args.author)
+            let user = member.user;
+            let name = user.username;
 
-            if (interaction.member.nickname){
-                name = interaction.member.nickname;
+            if (member.nickname){
+                name = member.nickname;
             }
 
             msgOptions = [
@@ -535,6 +537,22 @@ module.exports = {
                 `${aceslib.salt.prepped.named(name)}`,
                 `${choose(aceslib.salt.prepped.nameless)}`,
                 `${choose(aceslib.salt.prepped.nameless)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${aceslib.salt.prepped.named(name)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
+                `${choose(aceslib.salt.prepped.nameless)}`,
                 "Step off bitch.",
                 "Congratulations. I had impossibly low expectations for you and you still disappointed me.",
                 "Based on your recent evaluation, you've hit rock bottom and started showing signs of digging.",
@@ -546,12 +564,7 @@ module.exports = {
 
             let decision = choose(msgOptions)
 
-            if (decision == '+10')
-            {
-                decision = 'I see great fortune in your future! (+10 ⵇ)'
-                currency.add(interaction.member.user.id, 10)
-            }
-            else if (decision == '+special'){
+            if (decision == '+special'){
                 switch (interaction.member.user.id){
                     case (472540805966331925):
                         decision = "You always impress me daddy sov."
@@ -562,11 +575,9 @@ module.exports = {
                 }
             }
 
-            await interaction.deferReply();
             aceslib.msg(interaction.client, `I did a big think. ${decision}`)
             await wait(5000);
-            await interaction.editReply(decision);
-            return { message: await interaction.fetchReply(), args: { none: "none" } }
+            await channel.send(decision);
         }
 
 

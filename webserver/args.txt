@@ -1,0 +1,15 @@
+top
+- none
+
+give
+- item <string>
+- amount <int>
+- target <userID>
+
+fun bonk
+- target <userID>
+- reason <string>
+- ping <bool>
+
+fun bigthink
+- author <UserID>

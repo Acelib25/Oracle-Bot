@@ -11,7 +11,6 @@
             color: #05d744;
             margin: 0;
             width: 100vw;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -69,6 +68,7 @@
     <br>
     <button onclick="window.location.href='/interact/top?guild=1049700882335400047&channel=1082842699272552509'">Send a leaderboard to #ws-test</button>
     <br>
+    <button onclick="window.location.href='/interact/fun?subcommand=bonk&guild=1049700882335400047&channel=1082842699272552509&target=1010227827481784411&reason=&ping=true'">Bonk Oracle in #ws-test</button>
     <br>
     <form action="/interact/fun" method="post">
         <input type="number" name="target" placeholder="Type a User ID" required><br>
@@ -80,7 +80,14 @@
         <button type="submit">Bonk User</button>
     </form>
     <br>
+    <form action="/interact/give" method="post">
+        <input type="number" name="target" placeholder="Type a User ID" required><br>
+        <input type="text" name="item" placeholder="Item Name" required><br>
+        <input type="number" name="amount" placeholder="How Many?" required><br>
+        <input type="number" name="channel_id" placeholder="Enter channel ID"><br>
+        <button type="submit">Give Item</button>
+    </form>
     <br>
-    <button onclick="window.location.href='/interact/fun?subcommand=bonk&guild=1049700882335400047&channel=1082842699272552509&target=1010227827481784411&reason=&ping=true'">Bonk Oracle in #ws-test</button>
+    <p>test channel id: 1082842699272552509</p>
 </body>
 </html>
