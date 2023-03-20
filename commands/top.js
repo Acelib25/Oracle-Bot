@@ -123,7 +123,7 @@ module.exports = {
 			networth.sort((a, b) => b.networth - a.networth)
 				.filter(user => guild.members.cache.has(user.user_id))
                 .first(30)
-                .map((user, position) => `(${position + 1}) ${(guild.members.cache.get(user.user_id).user.username)}: ${parseInt(user.networth).toFixed(2)} ⵇ`)
+                .map((user, position) => `(${position + 1}) ${(guild.members.cache.get(user.user_id).user.username)}: ${parseFloat(user.networth).toFixed(2)} ⵇ`)
                 .join('\n'),
             { code: true }
 		);
