@@ -17,7 +17,8 @@
     "eslint": "^8.22.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "d_start": "node ./.oracledev.js",
+    "d_deploy": "node ./.deploy-commands-dev.js",
     "start": "node ./oracle.js",
     "deploy": "node ./.deploy-commands.js"
   },
