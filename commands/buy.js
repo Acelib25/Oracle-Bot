@@ -44,7 +44,7 @@ module.exports = {
             await user.addItem(item);
         }
 
-		await interaction.reply(`You've bought: ${amount} ${item.name}.`);
+		await interaction.reply(`You've bought: ${amount} ${item.name}.\nYou have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ left.`);
 		return { message: await interaction.fetchReply() }
 		},
 	async args(interaction) {

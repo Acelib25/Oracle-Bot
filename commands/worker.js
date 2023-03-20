@@ -95,7 +95,7 @@ module.exports = {
                 currency.add(interaction.member.user.id, item.cost * -1);
             }
             
-            await interaction.reply(`You bought and deployed ${amount} ${itemName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].`)
+            await interaction.reply(`You bought and deployed ${amount} ${itemName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].\nYou have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ left.`)
             return { message: await interaction.fetchReply() }
         }
         

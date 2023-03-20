@@ -44,7 +44,7 @@ module.exports = {
 					await currency.add(interaction.member.user.id, (item.cost*0.85).toFixed(2));
 					sum += 1*(item.cost*0.85).toFixed(2)
 			}
-				await interaction.editReply(`Earnings!\n\n ${sum} ⵇ`)
+				await interaction.editReply(`Earnings!\n\n ${sum.toFixed(2)} ⵇ`)
 			}			
 		}
 		console.log("Done!")
