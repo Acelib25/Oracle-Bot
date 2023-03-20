@@ -149,7 +149,6 @@ client.once('ready', async () => {
         }
     });
 
-
     // See args.txt for what wants what.
     app.post('/interact/:command', async (req, res, next) => {
         console.log(req.body);

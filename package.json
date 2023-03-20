@@ -9,9 +9,9 @@
     "sqlite3": "^5.0.11"
   },
   "name": "oracle-bot",
-  "version": "2.3.0",
-  "versionName": "Storage and Slots!",
-  "description": "Slots now uses a pot for winnings and HandsOff mode was added to make stops/restarts safer",
+  "version": "2.3.1",
+  "versionName": "Bulk buying!",
+  "description": "Buy mre than one!",
   "main": "oracle.js",
   "devDependencies": {
     "eslint": "^8.22.0"

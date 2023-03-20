@@ -565,7 +565,7 @@ module.exports = {
             let decision = choose(msgOptions)
 
             if (decision == '+special'){
-                switch (interaction.member.user.id){
+                switch (user.id){
                     case (472540805966331925):
                         decision = "You always impress me daddy sov."
                         break;
@@ -575,7 +575,7 @@ module.exports = {
                 }
             }
 
-            aceslib.msg(interaction.client, `I did a big think. ${decision}`)
+            aceslib.msg(guild.client, `I did a big think. ${decision}`)
             await wait(5000);
             await channel.send(decision);
         }

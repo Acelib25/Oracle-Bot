@@ -19,7 +19,8 @@ module.exports = {
 			sub
 			.setName('buy')
             .setDescription('Buy workers!')
-            .addStringOption(option => option.setName('item').setDescription('Who would you like to buy?')),
+            .addStringOption(option => option.setName('item').setDescription('Who would you like to buy?'))
+            .addIntegerOption(option => option.setName('amount').setDescription('How many?').setMinValue(1)),
 		)
         .addSubcommand(sub => 
 			sub
@@ -69,6 +70,7 @@ module.exports = {
         
         else if (interaction.options.getSubcommand() === 'buy') {
             const itemName = interaction.options.getString('item');
+            const amount = interaction.options.getInteger('amount');
             const item = await WorkerShop.findOne({ where: { name: { [Op.like]: itemName } } });
 
             if (!item) return interaction.reply(`That worker doesn't exist.`);
@@ -76,20 +78,24 @@ module.exports = {
             if (item.name == "Hacker GF") {interaction.reply(`Good luck, she is hidden behind 6 proxies, 3 VPNs, a false alias, and like 30 or so giant stuffed animals.`); return { message: await interaction.fetchReply() };}
         
 
-            if (item.cost > currency.getBalance(interaction.member.user.id).toFixed(2)) {
-                return interaction.reply(`You currently have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ, but the ${item.name} costs ${item.cost} ⵇ!`);
+            if (item.cost*amount > currency.getBalance(interaction.member.user.id).toFixed(2)) {
+                return interaction.reply(`You currently have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ, but ${amount} ${item.name} costs ${item.cost*amount} ⵇ!`);
             }
-            let d = new Date();
-            let stamp = addMinutes(d, 60);
-            let wrk = await Workers.create({
-                user_id: interaction.member.user.id,
-                claim_stamp: stamp.valueOf(),
-                worker_id: item.name,
-            }); 
-                
-            console.log(stamp);
-            currency.add(interaction.member.user.id, item.cost * -1);
-            await interaction.reply(`You bought and deployed ${itemName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].`)
+
+            let stamp = 0;
+            for(let k = 0; k < amount; k++){
+                let d = new Date();
+                stamp = addMinutes(d, 60);
+                let wrk = await Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: item.name,
+                }); 
+
+                currency.add(interaction.member.user.id, item.cost * -1);
+            }
+            
+            await interaction.reply(`You bought and deployed ${amount} ${itemName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].`)
             return { message: await interaction.fetchReply() }
         }
         
@@ -132,8 +138,11 @@ module.exports = {
             const worker = await WorkerShop.findOne({ where: { name: { [Op.like]: workerName } } });
 		
             const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
+            const workers = await Workers.findAll({ where: { user_id: interaction.member.user.id, worker_id: { [Op.like]: workerName } }  });
+
+            const workersHad = workers.map(i => `${i.worker_id}`);
             
-            if (worker != null){
+            if (workersHad.includes(`${worker.name}`)){
                 await user.undeployWorker(worker);
                                 
                 await interaction.reply(`You recaptured ${workerName}, they have been stuffed back into your backpack for safe keeping. :)`)
