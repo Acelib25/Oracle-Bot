@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { SlashCommandBuilder, codeBlock, AttachmentBuilder, Collection } = require('discord.js');
+const { SlashCommandBuilder, codeBlock, AttachmentBuilder, Collection, ChatInputCommandInteraction } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
 const { Users, CurrencyShop, WorkerShop, Workers } = require('../dbObjects.js');
 const { Op } = require('sequelize');
@@ -41,6 +41,10 @@ module.exports = {
 		),
 	async execute(interaction, currency) {
 
+        ChatInputCommandInteraction.prototype.ghost = async function(content){
+            this.reply({content: content, ephemeral: true});
+        }
+
         function addMinutes(date, minutes) {
             return new Date(date.getTime() + minutes*60000);
         }
@@ -60,10 +64,11 @@ module.exports = {
             
             return options[i].item;
         }
+
         
         if (interaction.options.getSubcommand() === 'shop') {
             const items = await WorkerShop.findAll();
-            await interaction.reply(codeBlock(items.map(i => `${i.name}: ${i.cost} ⵇ`).join('\n')));
+            await interaction.ghost(codeBlock(items.map(i => `${i.name}: ${i.cost} ⵇ`).join('\n')));
             return { message: await interaction.fetchReply() }
         }
         
@@ -72,13 +77,13 @@ module.exports = {
             const amount = interaction.options.getInteger('amount');
             const item = await WorkerShop.findOne({ where: { name: { [Op.like]: itemName } } });
 
-            if (!item) return interaction.reply(`That worker doesn't exist.`);
+            if (!item) return interaction.ghost(`That worker doesn't exist.`);
             
-            if (item.name == "Hacker GF") {interaction.reply(`Good luck, she is hidden behind 6 proxies, 3 VPNs, a false alias, and like 30 or so giant stuffed animals.`); return { message: await interaction.fetchReply() };}
+            if (item.name == "Hacker GF") {return interaction.ghost(`Good luck, she is hidden behind 6 proxies, 3 VPNs, a false alias, and like 30 or so giant stuffed animals.`); return { message: await interaction.fetchReply() };}
         
 
             if (item.cost*amount > currency.getBalance(interaction.member.user.id).toFixed(2)) {
-                return interaction.reply(`You currently have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ, but ${amount} ${item.name} costs ${item.cost*amount} ⵇ!`);
+                return interaction.ghost(`You currently have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ, but ${amount} ${item.name} costs ${item.cost*amount} ⵇ!`);
             }
 
             let stamp = 0;
@@ -94,7 +99,7 @@ module.exports = {
                 currency.add(interaction.member.user.id, item.cost * -1);
             }
             
-            await interaction.reply(`You bought and deployed ${amount} ${itemName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].\nYou have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ left.`)
+            await interaction.ghost(`You bought and deployed ${amount} ${itemName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].\nYou have ${currency.getBalance(interaction.member.user.id).toFixed(2)} ⵇ left.`)
             return { message: await interaction.fetchReply() }
         }
         
@@ -123,10 +128,10 @@ module.exports = {
                 
                 console.log(stamp);
                 
-                await interaction.reply(`You deployed ${workerName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].`)
+                await interaction.ghost(`You deployed ${workerName}, you can claim their rewards on [${stamp.toDateString()}] at [${stamp.toTimeString()}].`)
                 await user.removeWorker(worker);
             } else {
-                await interaction.reply(`You don't have ${workerName} or they could not be deployed.`)
+                await interaction.ghost(`You don't have ${workerName} or they could not be deployed.`)
             }
                 return { message: await interaction.fetchReply() }
         
@@ -144,11 +149,11 @@ module.exports = {
             if (workersHad.includes(`${worker.name}`)){
                 await user.undeployWorker(worker);
                                 
-                await interaction.reply(`You recaptured ${workerName}, they have been stuffed back into your backpack for safe keeping. :)`)
+                await interaction.ghost(`You recaptured ${workerName}, they have been stuffed back into your backpack for safe keeping. :)`)
                 
                 await user.addWorker(worker);
             } else {
-                await interaction.reply(`You don't have ${workerName} deployed.`)
+                await interaction.ghost(`You don't have ${workerName} deployed.`)
             }
                 return { message: await interaction.fetchReply() }
         }
@@ -214,8 +219,6 @@ module.exports = {
 
             let log = [];
             console.log(`;`+bye);
-            log.push(`stamp: ${stamp}`);
-            log.push(`workerIDs: ${workerIDs}`)
 
             let money = 0;
             for(let k = 0; k < workerCount.beggar * 10;k++){
@@ -248,7 +251,7 @@ module.exports = {
                     {item: "Egg Borgur", weight: 1 }
                 ]
                 item = weighted_random(opt);
-                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: item } } });
                 let tmp = await user.addItem(give)
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
@@ -270,7 +273,7 @@ module.exports = {
                     {item: "A+ paper", weight: 15 }
                 ]
                 item = weighted_random(opt);
-                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: item } } });
                 let tmp = await user.addItem(give)
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
@@ -291,7 +294,7 @@ module.exports = {
                     {item: "Coal", weight: 50 }, 
                 ]
                 item = weighted_random(opt);
-                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: item } } });
                 let tmp = await user.addItem(give)
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
@@ -314,7 +317,7 @@ module.exports = {
                     {item: "Wet Cell Phone", weight: 5 }
                 ]
                 item = weighted_random(opt);
-                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: item } } });
                 let tmp = await user.addItem(give)
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
@@ -329,14 +332,14 @@ module.exports = {
             }
             for(let k = 0; k < workerCount.cornStar; k++){
                 let item = "Nothin";
-                let opt = opt = [
+                let opt = [
                     {item: "Colacaine", weight: 15 },
                     {item: "Veed", weight: 30 }, 
                     {item: "Cake", weight: 5 }, 
                     {item: "Fishy Fish", weight: 50 }
                 ]
                 item = weighted_random(opt);
-                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: item } } });
                 let tmp = await user.addItem(give)
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
@@ -358,7 +361,7 @@ module.exports = {
                     {item: "Pjizz", weight: 5 }
                 ]
                 item = weighted_random(opt);
-                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: item } } });
                 let tmp = await user.addItem(give)
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
@@ -379,7 +382,7 @@ module.exports = {
                     {item: "RAM", weight: 10 }
                 ]
                 item = weighted_random(opt);
-                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: item } } });
                 let tmp = await user.addItem(give)
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
@@ -393,13 +396,13 @@ module.exports = {
                 
             }
 
-
-            aceslib.msg(interaction.client, log.join("\n"))
-            await interaction.reply({content: "This might take a moment...\n\nDone!", ephemeral: true});
+            currency.add(interaction.member.user.id, money);
+            aceslib.msg(interaction.client, `Claimed:\nBeggar: ${workerCount.beggar}\nWaitress: ${workerCount.waitress}\nTeacher: ${workerCount.teacher}\nMiner: ${workerCount.miner}\nFisher: ${workerCount.fisher}\nCorn Star: ${workerCount.cornStar}\nRug Dealer: ${workerCount.rugDealer}\nHaxor: ${workerCount.haxor}`)
+            await interaction.editReply({content: `This might take a moment...\n\nClaimed:\nBeggar: ${workerCount.beggar}\nWaitress: ${workerCount.waitress}\nTeacher: ${workerCount.teacher}\nMiner: ${workerCount.miner}\nFisher: ${workerCount.fisher}\nCorn Star: ${workerCount.cornStar}\nRug Dealer: ${workerCount.rugDealer}\nHaxor: ${workerCount.haxor}`, ephemeral: true});
 
 
             console.log("Done")
-            return { message: 'E' }
+            return { message: `This might take a moment...\n\nClaimed:\nBeggar: ${workerCount.beggar}\nWaitress: ${workerCount.waitress}\nTeacher: ${workerCount.teacher}\nMiner: ${workerCount.miner}\nFisher: ${workerCount.fisher}\nCorn Star: ${workerCount.cornStar}\nRug Dealer: ${workerCount.rugDealer}\nHaxor: ${workerCount.haxor}` }
         }
 
 		
@@ -415,9 +418,9 @@ const target = interaction.options.getUser('user') ?? interaction.member.user;
 		const user = await Users.findOne({ where: { user_id: target.id } });
 		const items = await user.getItems();
 
-		if (!items.length) return interaction.reply(`${target.tag} has nothing!`);
+		if (!items.length) return interaction.ghost(`${target.tag} has nothing!`);
 
-		await interaction.reply(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.item.name}`).join(', ')}`);
+		await interaction.ghost(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.item.name}`).join(', ')}`);
 		return { message: await interaction.fetchReply() }
 
 */
