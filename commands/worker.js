@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { SlashCommandBuilder, codeBlock, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, codeBlock, AttachmentBuilder, Collection } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
 const { Users, CurrencyShop, WorkerShop, Workers } = require('../dbObjects.js');
 const { Op } = require('sequelize');
@@ -47,7 +47,6 @@ module.exports = {
 
         function weighted_random(options) {
             var i;
-        
             var weights = [];
         
             for (i = 0; i < options.length; i++)
@@ -155,258 +154,249 @@ module.exports = {
         }
 
         else if (interaction.options.getSubcommand() === 'claim') {
-            await interaction.reply({content: "You got a lot, this might take a moment...\n"});
+            await interaction.reply({content: "This might take a moment...\n", ephemeral: true});
             const deployed = await Workers.findAll({ where: { user_id: interaction.member.user.id } });
 
+            let workerCount = {
+                "beggar":0,
+                "waitress":0,
+                "teacher":0,
+                "miner":0,
+                "fisher":0,
+                "cornStar":0,
+                "rugDealer":0,
+                "haxor":0
+            }
+
             const stamp = deployed.map(i => {
-                let d = new Date().valueOf();
-                if (i.claim_stamp <= d){
+                let d_deployed = new Date().valueOf();
+                if (i.claim_stamp <= d_deployed){
                     return i.claim_stamp
                 }
             });
-            const workerID = deployed.map(i => {
-                let d = new Date().valueOf();
-                if (i.claim_stamp <= d){
-                    return i.worker_id
-                }
-            });
-
-
-            console.log(stamp)
-            console.log(workerID)
-
-            let log = [];
-
-            log.push(`stamp: ${stamp}`);
-            log.push(`workerID: ${workerID}`)
-
-            let d = new Date().valueOf();
-            let msg = ['Here are your results:'];
-            let index = -1;
-            const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
-            
-            for(element in stamp){
-                let pity = 0;
-                let opt = [];
-                let z,de,stamp,wrk,obj,item, tmp;
-                index++;
-                if (element <= d){
-                    console.log(workerID[index]);
-                    console.log(index)
-                    log.push(`worker(${index}): ${workerID[index]}`)
-                    switch (workerID[index]){
+            const workerIDs = deployed.map(i => {
+                let d_workerID = new Date().valueOf();
+                if (i.claim_stamp <= d_workerID){
+                    switch(i.worker_id){
                         case 'Beggar':
-                            pity = 0;
-                            opt = [
-                                {item: 0, weight: 1000 }, 
-                                {item: 0.1, weight: 400 }, 
-                                {item: 0.5, weight: 400 }, 
-                                {item: 0.75, weight: 200 }, 
-                                {item: 1, weight: 100 },
-                                {item: 5, weight: 50 },
-                                {item: 10, weight: 5 }
-                            ]
-                            z = 0;
-                            while(z < 10){
-                                z++
-                                pity += weighted_random(opt);
-                            }
-                            currency.add(interaction.member.user.id, pity);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Beggar",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.beggar(pity));
-                            msg.push(obj);
+                            workerCount.beggar += 1;
                             break;
                         case 'Waitress':
-                            pity = "Nothin";
-                            opt = [
-                                {item: "Tea", weight: 50 }, 
-                                {item: "Coffee", weight: 40 }, 
-                                {item: "Cake", weight: 10 },
-                                {item: "Egg Borgur", weight: 1 }
-                            ]
-                            pity = weighted_random(opt);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Waitress",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.waitress(pity));
-                            msg.push(obj);
-                            item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            tmp = await user.addItem(item)
-                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
+                            workerCount.waitress += 1;
                             break;
                         case 'Teacher':
-                            pity = "Nothin";
-                            opt = [
-                                {item: "Ruler", weight: 10 }, 
-                                {item: "Apple", weight: 20 }, 
-                                {item: "B+ paper", weight: 25 },
-                                {item: "A+ paper", weight: 15 }
-                            ]
-                            pity = weighted_random(opt);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Teacher",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.teacher(pity));
-                            msg.push(obj);
-                            item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            tmp = await user.addItem(item)
-                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
+                            workerCount.teacher += 1;
                             break;
                         case 'Miner':
-                            pity = "Nothin";
-                            opt = [
-                                {item: "Gold", weight: 15 },
-                                {item: "Iron", weight: 30 }, 
-                                {item: "Coal", weight: 50 }, 
-                            ]
-                            pity = weighted_random(opt);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Miner",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.miner(pity));
-                            msg.push(obj);
-                            item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            tmp = await user.addItem(item)
-                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
+                            workerCount.miner += 1;
                             break;
                         case 'Fisher':
-                            pity = "Nothin";
-                            opt = [
-                                {item: "Old Boot", weight: 40 },
-                                {item: "Dull Fish", weight: 30 }, 
-                                {item: "Shiny Fish", weight: 15 }, 
-                                {item: "Fishy Fish", weight: 10 },
-                                {item: "Wet Cell Phone", weight: 5 }
-                            ]
-                            pity = weighted_random(opt);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Fisher",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.fisher(pity));
-                            msg.push(obj);
-                            item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            tmp = await user.addItem(item)
-                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
+                            workerCount.fisher += 1;
                             break;
                         case 'Corn Star':
-                            pity = "Nothin";
-                            opt = [
-                                {item: "Colacaine", weight: 15 },
-                                {item: "Veed", weight: 30 }, 
-                                {item: "Cake", weight: 5 }, 
-                                {item: "Fishy Fish", weight: 50 }
-                            ]
-                            pity = weighted_random(opt);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Corn Star",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.cornstar(pity));
-                            msg.push(obj);
-                            item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            tmp = await user.addItem(item)
-                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
+                            workerCount.cornStar += 1;
                             break;
                         case 'Rug Dealer':
-                            pity = "Nothin";
-                            opt = [
-                                {item: "Colacaine", weight: 30 },
-                                {item: "Veed", weight: 50 }, 
-                                {item: "DSD", weight: 15 }, 
-                                {item: "Pjizz", weight: 5 }
-                            ]
-                            pity = weighted_random(opt);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Rug Dealer",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.rugdealer(pity));
-                            msg.push(obj);
-                            item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            tmp = await user.addItem(item)
-                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
+                            workerCount.rugDealer += 1;
                             break;
                         case 'Haxor':
-                            pity = "Nothin";
-                            opt = [
-                                {item: "Pineapple", weight: 50 }, 
-                                {item: "Bash", weight: 40 }, 
-                                {item: "RAM", weight: 10 }
-                            ]
-                            pity = weighted_random(opt);
-                            de = new Date();
-                            stamp = addMinutes(de, 60);
-                            wrk = Workers.create({
-                                user_id: interaction.member.user.id,
-                                claim_stamp: stamp.valueOf(),
-                                worker_id: "Haxor",
-                            });
-                            obj = codeBlock(aceslib.workerMessages.haxor(pity));
-                            msg.push(obj);
-                            item = await CurrencyShop.findOne({ where: { name: { [Op.like]: pity } } });
-                            tmp = await user.addItem(item)
-                            aceslib.msg(interaction.client, `Added ${item.name} to ${interaction.member.user.tag}\n\n ${tmp}`)
+                            workerCount.haxor += 1;
                             break;
-                    }       
-                } 
-            } 
-            console.log(msg);
-	    let bye = await Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
-
-            console.log(`; ${bye}`)
-            log.push(`msg: {\n${msg.join("\n")}\n}`)
-
-            if (msg.toString().replace(/([\,])+/g, "\n").length >= 2000) {
-                if (msg.length > 10) {
-                    for (let i = 0; i < 10; i++){
-                        //console.log(`A:\n\n\n${i}`);
-                        interaction.followUp({content: msg[i]});
                     }
-                    interaction.followUp(`Plus ${msg.length - 10} more...`)
+                    return i.worker_id
                 }
-                else {
-                    for (const i of msg){
-                        //console.log(`A:\n\n\n${i}`);
-                        interaction.followUp({content: i});
-                    }
-                }
-                let de2 = new Date();
-                let stamp2 = addMinutes(de2, 60);
-                await interaction.followUp(`Your workers will be ready again at [${stamp2.toDateString()}] at [${stamp2.toTimeString()}]`);
-            } else {
-                await interaction.followUp({content: msg.join("\n")});
-                let de2 = new Date();
-                let stamp2 = addMinutes(de2, 60);
-                await interaction.followUp(`Your workers will be ready again at [${stamp2.toDateString()}] at [${stamp2.toTimeString()}]`);
+            });  
+
+
+            let d_timecheck = new Date().valueOf();
+            const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
+            let bye = await Workers.destroy({ where: { claim_stamp: { [Op.lte]: d_timecheck }, user_id: interaction.member.user.id } })
+
+            let log = [];
+            console.log(`;`+bye);
+            log.push(`stamp: ${stamp}`);
+            log.push(`workerIDs: ${workerIDs}`)
+
+            let money = 0;
+            for(let k = 0; k < workerCount.beggar * 10;k++){
+                let opt = [
+                    {item: 0, weight: 1000 }, 
+                    {item: 0.1, weight: 400 }, 
+                    {item: 0.5, weight: 400 }, 
+                    {item: 0.75, weight: 200 }, 
+                    {item: 1, weight: 100 },
+                    {item: 5, weight: 50 },
+                    {item: 10, weight: 5 }
+                ]
+                money += weighted_random(opt);
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Beggar",
+                });
+                //let obj = codeBlock(aceslib.workerMessages.beggar(pity));
+                //msg.push(obj);
             }
+            for(let k = 0; k < workerCount.waitress; k++){
+                let item = "Nothin";
+                let opt = [
+                    {item: "Tea", weight: 50 }, 
+                    {item: "Coffee", weight: 40 }, 
+                    {item: "Cake", weight: 10 },
+                    {item: "Egg Borgur", weight: 1 }
+                ]
+                item = weighted_random(opt);
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let tmp = await user.addItem(give)
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Waitress",
+                });
+                //obj = codeBlock(aceslib.workerMessages.waitress(pity));
+                //msg.push(obj);
+                
+            }
+            for(let k = 0; k < workerCount.teacher; k++){
+                let item = "Nothin";
+                let opt = [
+                    {item: "Ruler", weight: 10 }, 
+                    {item: "Apple", weight: 20 }, 
+                    {item: "B+ paper", weight: 25 },
+                    {item: "A+ paper", weight: 15 }
+                ]
+                item = weighted_random(opt);
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let tmp = await user.addItem(give)
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Teacher",
+                });
+                //obj = codeBlock(aceslib.workerMessages.waitress(pity));
+                //msg.push(obj);
+                
+            }
+            for(let k = 0; k < workerCount.miner; k++){
+                let item = "Nothin";
+                let opt = [
+                    {item: "Gold", weight: 15 },
+                    {item: "Iron", weight: 30 }, 
+                    {item: "Coal", weight: 50 }, 
+                ]
+                item = weighted_random(opt);
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let tmp = await user.addItem(give)
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Miner",
+                });
+                //obj = codeBlock(aceslib.workerMessages.waitress(pity));
+                //msg.push(obj);
+                
+            }
+            for(let k = 0; k < workerCount.fisher; k++){
+                let item = "Nothin";
+                let opt = [
+                    {item: "Old Boot", weight: 40 },
+                    {item: "Dull Fish", weight: 30 }, 
+                    {item: "Shiny Fish", weight: 15 }, 
+                    {item: "Fishy Fish", weight: 10 },
+                    {item: "Wet Cell Phone", weight: 5 }
+                ]
+                item = weighted_random(opt);
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let tmp = await user.addItem(give)
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Fisher",
+                });
+                //obj = codeBlock(aceslib.workerMessages.waitress(pity));
+                //msg.push(obj);
+                
+            }
+            for(let k = 0; k < workerCount.cornStar; k++){
+                let item = "Nothin";
+                let opt = opt = [
+                    {item: "Colacaine", weight: 15 },
+                    {item: "Veed", weight: 30 }, 
+                    {item: "Cake", weight: 5 }, 
+                    {item: "Fishy Fish", weight: 50 }
+                ]
+                item = weighted_random(opt);
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let tmp = await user.addItem(give)
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Corn Star",
+                });
+                //obj = codeBlock(aceslib.workerMessages.waitress(pity));
+                //msg.push(obj);
+                
+            }
+            for(let k = 0; k < workerCount.rugDealer; k++){
+                let item = "Nothin";
+                let opt = [
+                    {item: "Colacaine", weight: 30 },
+                    {item: "Veed", weight: 50 }, 
+                    {item: "DSD", weight: 15 }, 
+                    {item: "Pjizz", weight: 5 }
+                ]
+                item = weighted_random(opt);
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let tmp = await user.addItem(give)
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Rug Dealer",
+                });
+                //obj = codeBlock(aceslib.workerMessages.waitress(pity));
+                //msg.push(obj);
+                
+            }
+            for(let k = 0; k < workerCount.haxor; k++){
+                let item = "Nothin";
+                let opt = [
+                    {item: "Pineapple", weight: 50 }, 
+                    {item: "Bash", weight: 40 }, 
+                    {item: "RAM", weight: 10 }
+                ]
+                item = weighted_random(opt);
+                let give = await CurrencyShop.findOne({ where: { name: { [Op.like]: itemsGiven[k].item } } });
+                let tmp = await user.addItem(give)
+                let de = new Date();
+                let stamp = addMinutes(de, 60);
+                let wrk = Workers.create({
+                    user_id: interaction.member.user.id,
+                    claim_stamp: stamp.valueOf(),
+                    worker_id: "Haxor",
+                });
+                //obj = codeBlock(aceslib.workerMessages.waitress(pity));
+                //msg.push(obj);
+                
+            }
+
+
+            aceslib.msg(interaction.client, log.join("\n"))
+            await interaction.reply({content: "This might take a moment...\n\nDone!", ephemeral: true});
+
 
             console.log("Done")
             return { message: 'E' }
