@@ -114,8 +114,6 @@ client.on('interactionCreate', async interaction => {
         running++;
         aceslib.msg(interaction.client, `Commands running: ${running}`)
         const commandObj = await command.execute(interaction, currency);
-        running--
-        aceslib.msg(interaction.client, `Commands running: ${running}`)
 		currency.add(interaction.member.user.id, 0.01)
 
 		try {
@@ -145,6 +143,8 @@ client.on('interactionCreate', async interaction => {
 			console.error(error);
 			try {await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true})} catch(e){console.log("Fucked up")}
 		}
+        running--
+        aceslib.msg(interaction.client, `Commands running: ${running}`)
 	}
 	
 	/*else if(interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand()){
