@@ -184,10 +184,7 @@ module.exports = {
             let msg = ['Here are your results:'];
             let index = -1;
             const user = await Users.findOne({ where: { user_id: interaction.member.user.id } });
-            let bye = await Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
-
-            console.log(`; ${bye}`)
-
+            
             for(element in stamp){
                 let pity = 0;
                 let opt = [];
@@ -382,7 +379,9 @@ module.exports = {
                 } 
             } 
             console.log(msg);
+	    let bye = await Workers.destroy({ where: { claim_stamp: { [Op.lte]: d }, user_id: interaction.member.user.id } })
 
+            console.log(`; ${bye}`)
             log.push(`msg: {\n${msg.join("\n")}\n}`)
 
             if (msg.toString().replace(/([\,])+/g, "\n").length >= 2000) {
