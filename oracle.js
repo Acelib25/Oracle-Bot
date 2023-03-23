@@ -7,6 +7,7 @@ const { token } = require('./.config.json');
 const Sequelize = require('sequelize');
 const { Users, CurrencyShop, Storage } = require('./dbObjects.js');
 const aceslib = require('../aceslib');
+let running = 0;
 
 
 const sequelize = new Sequelize('database', 'user', 'password', {
@@ -76,8 +77,6 @@ client.once('ready', async () => {
 	console.log('Ready!');
 });
 
-let running = 0;
-
 client.on('interactionCreate', async interaction => {
 	if (!(interaction.isChatInputCommand() || interaction.isButton() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand())) return;
 
@@ -113,10 +112,10 @@ client.on('interactionCreate', async interaction => {
 		}
 
         running++;
-        aceslib.msg(`Commands running: ${running}`)
+        aceslib.msg(interaction.client, `Commands running: ${running}`)
         const commandObj = await command.execute(interaction, currency);
         running--
-        aceslib.msg(`Commands running: ${running}`)
+        aceslib.msg(interaction.client, `Commands running: ${running}`)
 		currency.add(interaction.member.user.id, 0.01)
 
 		try {
