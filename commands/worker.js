@@ -221,7 +221,7 @@ module.exports = {
             console.log(`;`+bye);
 
             let money = 0;
-            for(let k = 0; k < workerCount.beggar * 10;k++){
+            for(let k = 0; k < workerCount.beggar;k++){
                 let opt = [
                     {item: 0, weight: 1000 }, 
                     {item: 0.1, weight: 400 }, 
@@ -231,7 +231,9 @@ module.exports = {
                     {item: 5, weight: 50 },
                     {item: 10, weight: 5 }
                 ]
-                money += weighted_random(opt);
+                for(let z=0; z < 10; z++){
+                    money += weighted_random(opt);
+                }
                 let de = new Date();
                 let stamp = addMinutes(de, 60);
                 let wrk = Workers.create({
