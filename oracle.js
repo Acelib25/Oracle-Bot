@@ -7,7 +7,7 @@ const { token } = require('./.config.json');
 const Sequelize = require('sequelize');
 const { Users, CurrencyShop, Storage } = require('./dbObjects.js');
 const aceslib = require('../aceslib');
-let running = 0;
+let running;
 
 
 const sequelize = new Sequelize('database', 'user', 'password', {
@@ -74,6 +74,24 @@ client.once('ready', async () => {
     client.user.setActivity("the Entropy's Call...", { type: ActivityType.Listening });
 	const storedBalances = await Users.findAll();
 	storedBalances.forEach(b => currency.set(b.user_id, b));
+    let commandsrunningEntry = await Storage.findOne({ where: { guild_id: 0, value1key: "CommandsRunning"}});
+    if (commandsrunningEntry == null){
+        let tmp = Storage.create({
+            guild_id: 0,
+            value1key: 'CommandsRunning',
+            value1: 0
+        });
+        commandsrunningEntry = await Storage.findOne({ where: { guild_id: 0, value1key: "CommandsRunning"}});
+        running = 0;
+        
+    } else {
+        running = commandsrunningEntry.value1;
+    }
+
+    if (running > 0){
+        aceslib.msg(client, `There was a crash with commands running: ${running}`)
+        commandsrunningEntry.update({ value1: 0 });
+    }
 	console.log('Ready!');
 });
 
@@ -100,6 +118,20 @@ client.on('interactionCreate', async interaction => {
             handsOff = handsOffentry.value1;
         }
 
+        let commandsrunningEntry = await Storage.findOne({ where: { guild_id: 0, value1key: "CommandsRunning"}});
+        if (commandsrunningEntry == null){
+            let tmp = Storage.create({
+                guild_id: 0,
+                value1key: 'CommandsRunning',
+                value1: 0
+            });
+            commandsrunningEntry = await Storage.findOne({ where: { guild_id: 0, value1key: "CommandsRunning"}});
+            running = 0;
+            
+        } else {
+            running = commandsrunningEntry.value1;
+        }
+
 		if(interaction.member.user.id != '1054787604622606406' && interaction.member.user.id != '344143763918159884' && interaction.member.user.id != '558458639845818368' && handsOff == "true") {
 			await interaction.reply(`Hands Off has been engaged. This means Ace wants you to stop running commands.\nUsusaly this is so he does not break your workers or backpack. Please try your command again later.`); 
 			return { message: "Hands Off" }
@@ -111,39 +143,32 @@ client.on('interactionCreate', async interaction => {
 			speakers_name = interaction.member.user.username;
 		}
 
-        running++;
-        aceslib.msg(interaction.client, `Commands running: ${running}`)
-        const commandObj = await command.execute(interaction, currency);
-		currency.add(interaction.member.user.id, 0.01)
 
 		try {
-			
-			const cmdMessage = await commandObj.message;
-			
-			let args = await commandObj.args;
-
-			console.log(args);
-			console.log(JSON.stringify(args, null, 4));
-
-			const feedbackEmbed =  {
+			running++;
+            commandsrunningEntry.update({ value1: running });
+            aceslib.msg(interaction.client, `Commands running: ${running}`)
+            
+            const prerunEmbed =  {
 				color: 0x2c806a,
-				title: `${interaction.member.user.tag} ran a command`,
+				title: `${interaction.member.user.tag} started a command`,
 				fields: [
 					{ name: 'Command', value: `${interaction.commandName}` },
-					{ name: 'Args', value: `\`\`\`${JSON.stringify(args, null, 4)}\`\`\``},
-					{ name: 'Content', value: `; ${cmdMessage}`},
 					{ name: 'Guild', value:  `${interaction.guild.name}(${interaction.guild.id})`},
 					{ name: 'Channel', value:  `${interaction.channel.name}(${interaction.channel.id})`},
 				],
 				timestamp: new Date().toISOString(),
 			}
-			client.guilds.cache.get('792894937196134421').channels.cache.get('1054834188064411669').send({ embeds: [feedbackEmbed]})
-			
+			let msg = await client.guilds.cache.get('792894937196134421').channels.cache.get('1054834188064411669').send({ embeds: [prerunEmbed]})
+            
+            const commandObj = await command.execute(interaction, currency);
+            currency.add(interaction.member.user.id, 0.01)
 		} catch (error) {
 			console.error(error);
 			try {await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true})} catch(e){console.log("Fucked up")}
 		}
         running--
+        commandsrunningEntry.update({ value1: running });
         aceslib.msg(interaction.client, `Commands running: ${running}`)
 	}
 	
