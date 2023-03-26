@@ -1,0 +1,20 @@
+CONSOLE CODES:
+--------------
+
+DTBSE - Database console logging
+BTSRV - Discord integration logging
+WBSRV - Webserver logging
+
+ERROR - General error logging
+
+USERS - Logging specifically related to the Users database Collection
+ITEMS - Logging specifically related to item allocation
+WRKRS - Logging specifically related to the Workers database Collection
+
+CONSOLE COLORS:
+---------------
+
+Red - Fatal errors and failed attempts
+Yellow - Warnings and DB document creation attempts
+Green - Successful attempts
+Magenta - Server startup and nonspecific server status messages

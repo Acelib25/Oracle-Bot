@@ -1,13 +1,15 @@
 const mongoose = require('mongoose');
-const { String, Date, Array, Number } = mongoose.Schema.Types;
+const { String, Date, Array, Number, Boolean, ObjectId } = mongoose.Schema.Types;
 
 
 const Worker = mongoose.model('Worker', new mongoose.Schema({
+    worker_id: { type: ObjectId, required: true, index: {unique: true} },
     name: { type: String, required: true },
-    worker_id: { type: Number, required: true, index: true, unique: true },
+    price: { type: Number, required: true },
     level: { type: Number, required: true },
     mood: { type: String, required: true },
-    deployed: { type: String, required: true },
+    deployed: { type: Boolean, required: true },
+    arrested: { type: Boolean, required: true },
     produced: { type: Array, required: true },
 }));
 
@@ -17,4 +19,4 @@ const Worker = mongoose.model('Worker', new mongoose.Schema({
 // and getting the current ID
 // be sure to inc sequence after getting the ID
 
-module.exports = Worker;
+module.exports = { Worker };

@@ -4,11 +4,15 @@ const colors = require('colors');
 const path = require('node:path');
 
 const config = require('./config.json');
-const { connectDB } = require('./connectors/db.js');
+const { connectDB } = require('./controllers/db.js');
+const { request } = require('undici');
 
 const app = express();
-const userInfoRouter = require('./routes/userInfo.js');
+const authListener = express();
+const userInfoRouter = require('./routes/users.js');
 const itemManagementRouter = require('./routes/items.js');
+const workerManagementRouter = require('./routes/workers.js');
+const webRoutes = require('./routes/web.js');
 
 const client = new Client(
     {
@@ -21,12 +25,18 @@ client.on('ready', async () => {
     //console.log('before mongo connect');
     await connectDB();
     //console.log('after mongo connect');
-    console.log('[BOT] Ready!'.magenta);
-    app.use('/infoGrab', userInfoRouter);
-    app.use('/item', itemManagementRouter);
-    app.use('/', express.static(path.join(__dirname + '/public')));
-    app.listen(3000, () => {
-        console.log('[WEBSERVER] Example app listening on port 3000!'.magenta);
+    console.log('[BTSRV] Discord bot ready!'.magenta);
+    app.use('/users', userInfoRouter);
+    app.use('/items', itemManagementRouter);
+    app.use('/workers', workerManagementRouter);
+    app.use('/', webRoutes);
+    /*app.get('/auth', (req, res, next) => {
+        console.log('[AUTH] Auth page requested'.yellow);
+        //res.redirect(301, "")
+    });*/
+
+    app.listen(config.port, () => {
+        console.log(`[WBSRV] ${config.gameTitle} listening on port ${config.port}!`.magenta);
     });
 });
 
