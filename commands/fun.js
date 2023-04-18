@@ -67,6 +67,12 @@ module.exports = {
             sub
             .setName('inspire')
             .setDescription('Oracle Inspires!'),
+        )
+        .addSubcommand(sub => 
+            sub
+            .setName('pfp')
+            .setDescription('Steal their PFP!')
+            .addUserOption(option => option.setName('target').setDescription('Who\'s PFP'))
         ),
 	async execute(interaction, currency) {
 		
@@ -788,6 +794,30 @@ module.exports = {
 
             await interaction.reply({files: [attachment] });
             return { message: await interaction.fetchReply(), args: { quote: dec } }
+        }
+
+        else if (interaction.options.getSubcommand() === 'pfp') {
+            const taggedUser = interaction.options.getMember('target') ?? interaction.member;
+            let animDefaultPFP = taggedUser.user.displayAvatarURL({ extension: 'gif' });
+            let staticDefaultPFP = taggedUser.user.displayAvatarURL({ forceStatic: true });
+            let animServerPFP = taggedUser.displayAvatarURL({ extension: 'gif' });
+            let staticServerPFP = taggedUser.displayAvatarURL({ forceStatic: true });
+            const pfpEmbed = {
+                color: 0x2c806a,
+                title: `${taggedUser.nickname ?? taggedUser.user.username}'s PFPs`,
+                image: { url: taggedUser.displayAvatarURL({ dynamic: true, size: 256 * 2}) },
+                fields: [
+                    { name: 'Animated PFP', value: `[Link](${animDefaultPFP})`, inline: true},
+                    { name: 'Static PFP', value: `[Link](${staticDefaultPFP})`, inline: true},
+                    { name: ' ', value: ` `, inline: true},
+                    { name: 'Animated Server PFP', value: `[Link](${animServerPFP})`, inline: true},
+                    { name: 'Static Server PFP', value: `[Link](${staticServerPFP})`, inline: true},
+                    { name: ' ', value: ` `, inline: true},
+                ],
+                timestamp: new Date().toISOString(),
+            }
+            interaction.reply({ embeds: [pfpEmbed] })
+            return { message: "[Embed]", args: { none: "none" } }
         }
 	},
     async press(button, currency){
